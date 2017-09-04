@@ -1,0 +1,81 @@
+<!DOCTYPE html>
+<html lang="en">
+    <head>
+
+        <meta charset="UTF-8">
+        <meta name="viewport" content="width=device-width, initial-scale=1.0">
+        <meta name="author" content="Mislav Švaljek">
+        <meta name="description" content="JavaScript calculator">
+        <meta name="keywords" content="HTML,CSS,JavaScript">
+
+        <title>JavaScript Calculator</title>
+
+        <link rel="stylesheet" href="./css/style.css" type="text/css">
+        <link rel="stylesheet" href="./css/ionicons.css" type="text/css">
+
+    </head>
+    <body>
+
+
+        <div class="container">
+            <div id="history">
+                <div id="top-frame-history">
+                    <span class="ion-android-alarm-clock"></span>
+                    <h4>History</h4>
+                </div>
+                
+                <ul id="history-list"></ul>
+            </div>
+            <div id="calculator">
+                <div id="top-frame-calculator">
+                    <div id="date"></div>
+                    <div id="time"></div>
+
+                </div>
+                <div id="calculation">
+                    <div id="top-calculation"></div>
+                    <div id="bottom-calculation"></div>
+                </div>
+                <div class="row">
+                    <button class="buttons operations">AC</button>
+                    <button class="buttons operations">DEL</button>
+                    <button class="buttons operations">+/-</button>
+                    <button class="buttons operations">÷</button>
+                    <button class="buttons operations">x<sup>n</sup></button>
+                </div>
+                <div class="row">
+                    <button class="buttons">7</button>
+                    <button class="buttons">8</button>
+                    <button class="buttons">9</button>
+                    <button class="buttons operations">×</button>
+                    <button class="buttons operations">√</button>
+                </div>
+                <div class="row">
+                    <button class="buttons">4</button>
+                    <button class="buttons">5</button>
+                    <button class="buttons">6</button>
+                    <button class="buttons operations">-</button>
+                    <button class="buttons operations">sin</button>
+                </div>
+                <div class="row">
+                    <button class="buttons">1</button>
+                    <button class="buttons">2</button>
+                    <button class="buttons">3</button>
+                    <button class="buttons operations">+</button>
+                    <button class="buttons operations">cos</button>
+                </div>
+                <div class="row">
+                    <button class="buttons operations">.</button>
+                    <button class="buttons">0</button>
+                    <button class="buttons operations">(...)</button>
+                    <button class="buttons operations" id="equal">=</button>
+                </div>
+            </div>
+        </div>
+
+
+
+        <script src="app.js"></script>
+
+    </body>
+</html>

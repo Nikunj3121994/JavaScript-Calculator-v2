@@ -1,0 +1,138 @@
+* {
+    -webkit-box-sizing: border-box;
+    box-sizing: border-box;
+}
+
+html, body { font-family: Arial, sans-serif; }
+
+body {
+    background-color: #b0bec5;
+    margin: 0;
+    padding: 0;
+}
+
+.container { width: 100%; }
+
+#top-frame-calculator {
+    background-color: #455a64;
+    display: flex;
+    color: #ffb74d;
+    height: 25px;
+
+}
+#top-frame-calculator p {
+    font-size: 13px;
+    padding: 5px 10px;
+    margin: 0;
+}
+
+#date { flex: 1; text-align: left; font-weight: bold; }
+
+#time { flex: 1; text-align: right; font-weight: bold; }
+
+
+#calculation { background: linear-gradient(-90deg, #78909c, #b0bec5); height: 100px; }
+
+#top-calculation { 
+    height: 40px; 
+    font-size: 25px; 
+    padding: 5px 7px; 
+}
+
+#bottom-calculation { 
+    height: 60px; 
+    font-size: 45px; 
+    padding: 5px 2px; 
+}
+
+#bottom-calculation, #top-calculation { text-align: right; overflow: hidden; }
+
+#history { display: none; }
+
+
+
+.row {
+    display: -webkit-box;
+    display: -ms-flexbox;
+    display: flex;
+}
+
+.buttons {
+    background-color: #455a64;
+    border: none;
+    border-right: 1px solid #607d8b;
+    border-bottom: 1px solid #607d8b;
+    color: #ffb74d;
+    font-size: 28px;
+    flex: 20%;
+    height: 70px;
+}
+
+.buttons:last-child { border-right: none; }
+
+.row:last-child { border-bottom: none; }
+
+.operations { font-size: 22px; }
+
+#equal {
+    background-color: #ffb74d;
+    border-bottom: none;
+    color: black;
+    font-size: 30px;
+    flex: 40%;
+}
+#top-frame-history {
+    color: red;
+}
+
+@media screen and (min-width: 830px) {
+
+    html, body {
+        height: 100%;
+        width: 100%;
+        display: -webkit-box;
+        display: -ms-flexbox;
+        display: flex;
+    }
+
+    .container {
+        display: -webkit-box;
+        display: -ms-flexbox;
+        display: flex;
+        width: 800px;
+        margin: auto;        
+    }
+
+    #history {
+        overflow: hidden;
+        display: block;
+        -webkit-box-flex: 1;
+        -ms-flex: 1;
+        flex: 1;
+        box-shadow: 0 100px 200px #607d8b;
+        width: 300px;
+      
+    }
+
+    #calculator {
+        -webkit-box-flex: 1;
+        -ms-flex: 1;
+        flex: 1;
+        box-shadow: 0 100px 200px #607d8b; 
+    }
+    
+    #bottom-calculation, #top-calculation { max-width: 450px; }
+
+    .buttons {
+        transition: all .5s ease-in-out;
+        flex: none;
+        height: 80px;
+        width: 90px;
+    }
+
+    .buttons:hover { background-color: #607d8b; border: 1px solid #ffb74d; }
+
+    #equal { width: 180px; flex: none; }
+
+    #equal:hover { transform: scale(1.1); border: none; }
+}
