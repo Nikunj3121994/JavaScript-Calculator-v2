@@ -20,7 +20,7 @@
         <div class="container">
             <div id="history">
                 <div id="top-frame-history">
-                    <span class="ion-android-alarm-clock"></span>
+                    <span class="ion-android-time"></span>
                     <h4>History</h4>
                 </div>
                 
@@ -37,38 +37,38 @@
                     <div id="bottom-calculation"></div>
                 </div>
                 <div class="row">
-                    <button class="buttons operations">AC</button>
-                    <button class="buttons operations">DEL</button>
+                    <button data-key="Delete" class="buttons operations">AC</button>
+                    <button data-key='Backspace' class="buttons operations"><span class="ion-backspace"></span></button>
                     <button class="buttons operations">+/-</button>
-                    <button class="buttons operations">÷</button>
+                    <button data-key="/" class="buttons operations">÷</button>
                     <button class="buttons operations">x<sup>n</sup></button>
                 </div>
                 <div class="row">
-                    <button class="buttons">7</button>
-                    <button class="buttons">8</button>
-                    <button class="buttons">9</button>
-                    <button class="buttons operations">×</button>
+                    <button data-key="7" class="buttons">7</button>
+                    <button data-key="8" class="buttons">8</button>
+                    <button data-key="9" class="buttons">9</button>
+                    <button data-key="*" class="buttons operations">×</button>
                     <button class="buttons operations">√</button>
                 </div>
                 <div class="row">
-                    <button class="buttons">4</button>
-                    <button class="buttons">5</button>
-                    <button class="buttons">6</button>
-                    <button class="buttons operations">-</button>
-                    <button class="buttons operations">sin</button>
+                    <button data-key="4" class="buttons">4</button>
+                    <button data-key="5" class="buttons">5</button>
+                    <button data-key="6" class="buttons">6</button>
+                    <button data-key="-" class="buttons operations">-</button>
+                    <button data-key="s" class="buttons operations">sin</button>
                 </div>
                 <div class="row">
-                    <button class="buttons">1</button>
-                    <button class="buttons">2</button>
-                    <button class="buttons">3</button>
-                    <button class="buttons operations">+</button>
-                    <button class="buttons operations">cos</button>
+                    <button data-key="1" class="buttons">1</button>
+                    <button data-key="2" class="buttons">2</button>
+                    <button data-key="3" class="buttons">3</button>
+                    <button data-key="+" class="buttons operations">+</button>
+                    <button data-key="c" class="buttons operations">cos</button>
                 </div>
                 <div class="row">
-                    <button class="buttons operations">.</button>
-                    <button class="buttons">0</button>
-                    <button class="buttons operations">(...)</button>
-                    <button class="buttons operations" id="equal">=</button>
+                    <button data-key="." class="buttons operations">.</button>
+                    <button data-key="0" class="buttons">0</button>
+                    <button data-key="(...)" class="buttons operations">(...)</button>
+                    <button data-key="Enter" class="buttons operations" id="equal">=</button>
                 </div>
             </div>
         </div>

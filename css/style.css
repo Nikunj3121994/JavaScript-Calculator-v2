@@ -58,6 +58,7 @@ body {
 }
 
 .buttons {
+    transition: all .5s ease-in-out; 
     background-color: #455a64;
     border: none;
     border-right: 1px solid #607d8b;
@@ -69,6 +70,11 @@ body {
 }
 
 .buttons:last-child { border-right: none; }
+
+.buttons:hover { 
+    background-color: #607d8b; 
+    border: 1px solid #ffb74d; 
+}
 
 .row:last-child { border-bottom: none; }
 
@@ -82,6 +88,13 @@ body {
     flex: 40%;
 }
 
+#equal:hover { border: none; }
+
+.keypress { 
+   transition: all .1s ease-in-out;
+   background-color: #607d8b; 
+   border: 1px solid #ffb74d; 
+}
 
 @media screen and (min-width: 830px) {
 
@@ -122,13 +135,10 @@ body {
     #bottom-calculation, #top-calculation { max-width: 450px; }
 
     .buttons {
-        transition: all .5s ease-in-out;
         flex: none;
         height: 80px;
         width: 90px;
     }
-
-    .buttons:hover { background-color: #607d8b; border: 1px solid #ffb74d; }
 
     #equal { width: 180px; flex: none; }
 

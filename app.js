@@ -31,17 +31,15 @@ var date = document.getElementById('date'),
     calculationObject = {},
     topCalculation = document.getElementById('top-calculation'),
     bottomCalculation = document.getElementById('bottom-calculation'),
-    buttons = document.getElementsByClassName('buttons');
+    buttons = document.querySelectorAll('button');
 
 function mouseEvent() {
-    for (var i = 0; i < buttons.length; i++) {
-        buttons[i].addEventListener('click', mouseClick);
-    }
+    buttons.forEach(button => button.addEventListener('click', mouseClick));
 }
 
 
 function keyboardEvent() { 
-    document.addEventListener('keydown', keyboardKeys); 
+    window.addEventListener('keydown', keyboardKeys); 
 }
 
 function showTime(fn) {
@@ -53,19 +51,16 @@ function showTime(fn) {
 
 
 
-
 // Calculator Methods ...
 var calculatorMethods = 
     {
-        clearAll: function(value) {
-            value = '';
+        clearAll: function() {
             calculation = '';
             topScreen = '';
             bottomScreen = ''; 
         },
 
-        deleteOne: function(value) {
-            value = '';
+        deleteOne: function() {
             calculation = calculation.slice(0, -1);
             topScreen = topScreen.slice(0, -1);
             bottomScreen = bottomScreen.slice(0, -1);
@@ -174,7 +169,7 @@ var calculatorMethods =
             topScreen += value;
             bottomScreen += value;
         },
-
+        // Equal operator
         equal: function(value) {
             if(calculation === '' || calculation.match(/(\*|\+|-|\/|\^)/) === null  ) {
                 value = '';
@@ -197,22 +192,33 @@ var calculatorMethods =
                 bottomScreen = calculation;
             }     
         }
-
     };
 
 
 function keyboardKeys(ev) {
-    var value = ev.key;
-    console.log(ev);
+    
+    var button = document.querySelector(`button[data-key="${ev.key}"]`);
+    var buttons = document.querySelectorAll('button');
 
-    switch(value) {
+    if(button !== null) {
+        // Add css class with transition
+        button.classList.add('keypress');
+        button = button.innerHTML;
+    }
 
-        case 'Delete':
-            calculatorMethods.clearAll(value);
+    // Event listener for removing class with transition with 'transitionend' event
+    buttons.forEach(button => button.addEventListener('transitionend', function(event) {
+        this.classList.remove('keypress');
+    }));
+        
+    switch(button) {
+
+        case 'AC':
+            calculatorMethods.clearAll();
             break;
 
-        case 'Backspace':
-            calculatorMethods.deleteOne(value);
+        case '<span class="ion-backspace"></span>':
+            calculatorMethods.deleteOne();
             break;
 
         case '+':
@@ -223,11 +229,11 @@ function keyboardKeys(ev) {
             calculatorMethods.basicOperations('-');
             break;
 
-        case '*':
+        case '×':
             calculatorMethods.basicOperations('*');
             break;
 
-        case '/':
+        case '÷':
             calculatorMethods.basicOperations('/');
             break;
 
@@ -235,52 +241,52 @@ function keyboardKeys(ev) {
             calculatorMethods.equal('=');
             break;
 
-        case 's':
+        case 'sin':
             calculatorMethods.sinus();
             break;
 
-        case 'c':
+        case 'cos':
             calculatorMethods.cosinus();
             break;
 
-        case 'Enter':
+        case '=':
             calculatorMethods.equal('=');
             break;
 
         case '1':
-            calculatorMethods.numbers(value);
+            calculatorMethods.numbers(button);
             break;
 
         case '2':
-            calculatorMethods.numbers(value);
+            calculatorMethods.numbers(button);
             break;
 
         case '3':
-            calculatorMethods.numbers(value);
+            calculatorMethods.numbers(button);
             break;
 
         case '4':
-            calculatorMethods.numbers(value);
+            calculatorMethods.numbers(button);
             break;
 
         case '5':
-            calculatorMethods.numbers(value);
+            calculatorMethods.numbers(button);
             break;
 
         case '6':
-            calculatorMethods.numbers(value);
+            calculatorMethods.numbers(button);
             break;
 
         case '7':
-            calculatorMethods.numbers(value);
+            calculatorMethods.numbers(button);
             break;
 
         case '8':
-            calculatorMethods.numbers(value);
+            calculatorMethods.numbers(button);
             break;
 
         case '9':
-            calculatorMethods.numbers(value);
+            calculatorMethods.numbers(button);
             break;
 
                 }
@@ -296,11 +302,11 @@ function mouseClick() {
     switch(value) {
 
         case 'AC':
-            calculatorMethods.clearAll(value);
+            calculatorMethods.clearAll();
             break;
 
-        case 'DEL':
-            calculatorMethods.deleteOne(value);
+        case '<span class="ion-backspace"></span>':
+            calculatorMethods.deleteOne();
             break;
 
         case '+/-':
@@ -354,7 +360,6 @@ function mouseClick() {
         default:
             calculatorMethods.numbers(value);
                 }
-
 
     topCalculation.innerHTML = topScreen;
     bottomCalculation.innerHTML = bottomScreen;
