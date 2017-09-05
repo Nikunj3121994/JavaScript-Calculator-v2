@@ -1,217 +1,130 @@
-'use strict';
-this.onload = function () {
+/*javascript: 6*/
+this.onload = function() {
 
     keyboardEvent();
     mouseEvent();
 
-    showTime(function() {
-                clock.innerHTML = '<p>' + this.toLocaleTimeString() + '</p>';
-                date.innerHTML = '<p>' + this.toDateString().replace(/\s.+$/, '') + ', ' + this.toDateString().replace(/^\w+\s(\w+\s\d+)\s\d+$/, '$1') + '</p>';
-            });
-    
-    
+    showTime('calculator');
 
-    setInterval(function () { 
-        showTime(function() {
-                clock.innerHTML = '<p>' + this.toLocaleTimeString() + '</p>';
-                date.innerHTML = '<p>' + this.toDateString().replace(/\s.+$/, '') + ', ' + this.toDateString().replace(/^\w+\s(\w+\s\d+)\s\d+$/, '$1') + '</p>';
-            });
+
+    setInterval(function() {
+        showTime('calculator');
     }, 1000);
-
-    
-
 };
-// Date & Time variables
+
+
+
 var date = document.getElementById('date'),
     clock = document.getElementById('time'),
-    // Calculator variables
-    topScreen = '',
-    bottomScreen = '',
-    calculation = '',
-    calculationObject = {},
     topCalculation = document.getElementById('top-calculation'),
     bottomCalculation = document.getElementById('bottom-calculation'),
-    buttons = document.querySelectorAll('button');
+    buttons = document.querySelectorAll('button'),
+    number = '',
+    calculation = '';
 
 function mouseEvent() {
-    buttons.forEach(button => button.addEventListener('click', mouseClick));
+    buttons.forEach(function(button) {
+        button.addEventListener('click', mouseClick);
+    });
 }
 
 
-function keyboardEvent() { 
-    window.addEventListener('keydown', keyboardKeys); 
+function keyboardEvent() {
+    window.addEventListener('keydown', keyboardKeys);
 }
 
-function showTime(fn) {
-    var time = new Date();
-    
-    return fn.bind(time)();
+function showTime(place) {
+    var currentTime = new Date();
+
+    if(place === 'history')
+    {
+        return function() {
+            //something
+        }.call(currentTime);
+    }
+    else if(place === 'calculator')
+    {
+        return function() {
+            var re = /^(\w+)\s(\w+\s\d+)\s\d+$/;
+            clock.innerHTML = '<p>' + this.toLocaleTimeString() + '</p>';
+            date.innerHTML = '<p>' + this.toDateString().replace(re, '$1, $2') + '</p>';
+        }.call(currentTime);
+    }
 }
 
-
+var calculationsArray = [];
 
 
 // Calculator Methods ...
-var calculatorMethods = 
-    {
-        clearAll: function() {
-            calculation = '';
-            topScreen = '';
-            bottomScreen = ''; 
-        },
+var calculatorMethods = {
 
-        deleteOne: function() {
-            calculation = calculation.slice(0, -1);
-            topScreen = topScreen.slice(0, -1);
-            bottomScreen = bottomScreen.slice(0, -1);
-        },
+    clearAll: function() {
 
-        negate: function() {
-            if(calculation !== '') {
-                if(calculation.match(/(\+|-\/|\*|\^)/) !== null) {
-                    this.equal('=');
-                }  
-                topScreen = 'negate(' + parseFloat(calculation) + ')';
-                calculation = (-parseFloat(calculation)).toString();
-                bottomScreen = calculation;
-            }
-        },
+    },
 
-        sinus: function() {
-            if(calculation !== '') {
-                if(calculation.match(/(\+|-\/|\*|\^)/) !== null) {
-                    this.equal('=');
-                }  
-
-                topScreen = 'sin(' + parseFloat(calculation) + ')';
-                calculation = Math.sin(parseFloat(calculation)).toFixed(12).toString();
-                bottomScreen = calculation;
-            }
-        },
-
-        cosinus: function() {
-            if(calculation !== '') {
-                if(calculation.match(/(\+|-\/|\*|\^)/) !== null) {
-                    this.equal('=');
-                }  
-                topScreen = 'cos(' + parseFloat(calculation) + ')';
-                calculation = Math.cos(parseFloat(calculation)).toFixed(12).toString();
-                bottomScreen = calculation;
-            }
-        },
-
-        squareRoot: function() {
-            if(calculation !== '') {
-                if(calculation.match(/(\+|-\/|\*|\^)/) !== null) {
-                    this.equal('=');
-                }  
-                topScreen = '√(' + parseFloat(calculation) + ')';
-                calculation = Math.sqrt(parseFloat(calculation)).toFixed(12).toString();
-                if(calculation === 'NaN') {
-                    bottomScreen = 'Invalid input';
-                    calculation = '';
-                } else {
-                    if(calculation.match(/0+$/) !== null) {
-                        calculation = calculation.replace(/(\.0+|0+)$/, '');
-                    }
-                   bottomScreen = calculation;
-                }       
-            }
-        },
+    deleteOne: function() {
         
-        dot: function(value) {
-            if(calculation === '' || calculation.match(/\d+\.\d+$/) !== null || calculation.match(/(\*|\/|-|\+|\.)$/) !== null) {
-                value = '';
-            } else {
-                calculation += value;
-                topScreen = calculation;
-                bottomScreen += value;
-            }
-        },
+    },
 
-        brackets: function() {
+    negate: function() {
+        
+    },
 
-                if(calculation.match(/\(/) === null || calculation.match(/\)\W$/) !== null) {
-                    calculation += '(';
-                } else if(calculation.match(/\d+$/) !== null) {
-                    calculation += ')';
-                }
-                topScreen = calculation;
-   
-        },
+    sinus: function() {
+       
+    },
 
-        basicOperations: function(value) {
-            if(calculation === '') {
-                value = '';
-            }
-            if(calculation.match(/\[^A-Za-z0-9\)]$/) !== null) {
-                calculation = calculation.replace(/\W$/, value);
-                topScreen = calculation;
-            } else {
-                calculation += value;
-                topScreen = calculation;
-            }
-        },
+    cosinus: function() {
+        
+    },
 
-        numbers: function(value) {
-            if(calculation.match(/(\*|\+|-|\/|\^)$/) !== null) {
-                bottomScreen = '';
-            }
-            if(topScreen.match(/[a-z]+\((-\d+)|(\d+)\)$/) !== null || topScreen.match(/=$/) !== null) {
-                topScreen = '';
-                bottomScreen = '';
-                calculation = '';
-            }
-            if(topScreen.match(/\($/) !== null) {
-                bottomScreen = '';
-            }
-            calculation += value;
-            topScreen += value;
-            bottomScreen += value;
-        },
-        // Equal operator
-        equal: function(value) {
-            if(calculation === '' || calculation.match(/(\*|\+|-|\/|\^)/) === null  ) {
-                value = '';
-            } 
-            if(calculation.match(/(\*|\+|-|\/|\^)$/) !== null) {
-                calculation = calculation.replace(/\W/, '=');
-                topScreen = calculation;
-                calculation = parseFloat(calculation).toString();
-            } else if(calculation.match(/\^/) !== null) {
-                calculation = Math.pow(parseFloat(calculation.match(/^(-\d+|\d+)/)[0]), parseFloat(calculation.match(/(-\d+|\d+)$/)[0]));
-                calculation = calculation.toString();
-                topScreen += value;
-                bottomScreen = calculation;
-            } else {
-                topScreen += value;
-                calculation = eval(calculation).toFixed(12).toString();
-                if(calculation.match(/0+$/) !== null) {
-                    calculation = calculation.replace(/(\.0+|0+)$/, '');
-                }
-                bottomScreen = calculation;
-            }     
-        }
-    };
+    squareRoot: function() {
+        
+    },
+
+    dot: function(value) {
+       
+    },
+
+    brackets: function() {
+
+        
+
+    },
+
+    basicOperations: function(value) {
+       
+    },
+
+    numbers: function(value) {
+        
+    },
+    // Equal operator
+    equal: function(value) {
+       
+    }
+};
 
 
 function keyboardKeys(ev) {
-    
-    var button = document.querySelector(`button[data-key="${ev.key}"]`);
+
+    var button = document.querySelector('button[data-key="' + ev.key + '"]');
     var buttons = document.querySelectorAll('button');
 
-    if(button !== null) {
+    if (button !== null) {
         // Add css class with transition
         button.classList.add('keypress');
         button = button.innerHTML;
     }
 
     // Event listener for removing class with transition with 'transitionend' event
-    buttons.forEach(button => button.addEventListener('transitionend', function(event) {
-        this.classList.remove('keypress');
-    }));
-        
-    switch(button) {
+    buttons.forEach(function(button) {
+        button.addEventListener('transitionend', function(event) {
+            this.classList.remove('keypress');
+        });
+    });
+
+    switch (button) {
 
         case 'AC':
             calculatorMethods.clearAll();
@@ -289,7 +202,7 @@ function keyboardKeys(ev) {
             calculatorMethods.numbers(button);
             break;
 
-                }
+    }
 
     topCalculation.innerHTML = topScreen;
     bottomCalculation.innerHTML = bottomScreen;
@@ -299,7 +212,7 @@ function mouseClick() {
 
     var value = this.innerHTML;
 
-    switch(value) {
+    switch (value) {
 
         case 'AC':
             calculatorMethods.clearAll();
@@ -328,7 +241,7 @@ function mouseClick() {
         case 'x<sup>n</sup>':
             calculatorMethods.basicOperations('^');
             break;
-        
+
         case '(...)':
             calculatorMethods.brackets();
             break;
@@ -359,15 +272,8 @@ function mouseClick() {
 
         default:
             calculatorMethods.numbers(value);
-                }
+    }
 
     topCalculation.innerHTML = topScreen;
     bottomCalculation.innerHTML = bottomScreen;
 }
-
-
-
-
-
-
-
