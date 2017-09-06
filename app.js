@@ -1,48 +1,28 @@
-/*javascript: 6*/
+'esversion:6';
 this.onload = function() {
 
-    keyboardEvent();
-    mouseEvent();
-
-    showTime('calculator');
-
+    displayTime('calculator');
+    events();
 
     setInterval(function() {
-        showTime('calculator');
+        displayTime('calculator');
     }, 1000);
 };
 
 
+function displayTime(where)
+{
+    var date = document.getElementById('date'),
+        clock = document.getElementById('time'),
+        currentTime = new Date();
 
-var date = document.getElementById('date'),
-    clock = document.getElementById('time'),
-    topCalculation = document.getElementById('top-calculation'),
-    bottomCalculation = document.getElementById('bottom-calculation'),
-    buttons = document.querySelectorAll('button'),
-    number = '',
-    calculation = '';
-
-function mouseEvent() {
-    buttons.forEach(function(button) {
-        button.addEventListener('click', mouseClick);
-    });
-}
-
-
-function keyboardEvent() {
-    window.addEventListener('keydown', keyboardKeys);
-}
-
-function showTime(place) {
-    var currentTime = new Date();
-
-    if(place === 'history')
+    if(where === 'history')
     {
         return function() {
             //something
         }.call(currentTime);
     }
-    else if(place === 'calculator')
+    else if(where === 'calculator')
     {
         return function() {
             var re = /^(\w+)\s(\w+\s\d+)\s\d+$/;
@@ -52,228 +32,170 @@ function showTime(place) {
     }
 }
 
-var calculationsArray = [];
 
 
-// Calculator Methods ...
-var calculatorMethods = {
-
-    clearAll: function() {
-
+var calculationData =
+{
+    numbers: [],
+    addNumber: function(number, operator)
+    {
+        this.numbers.push({
+            value: number,
+            operation: operator || null
+        });
     },
-
-    deleteOne: function() {
-        
+    clearNumbers: function()
+    {
+        this.numbers = [];
     },
+    calculate: function()
+    {
 
-    negate: function() {
-        
-    },
-
-    sinus: function() {
-       
-    },
-
-    cosinus: function() {
-        
-    },
-
-    squareRoot: function() {
-        
-    },
-
-    dot: function(value) {
-       
-    },
-
-    brackets: function() {
-
-        
-
-    },
-
-    basicOperations: function(value) {
-       
-    },
-
-    numbers: function(value) {
-        
-    },
-    // Equal operator
-    equal: function(value) {
-       
     }
 };
 
+var historyData =
+{
+    history: [],
+    addHistory: function(number, calculation)
+    {
+        this.history.push({
+            number: number,
+            calculation: calculation
+        });
+    },
+    displayHistory: function()
+    {
+        var historyUl = document.querySelector('ul');
+        historyUl.innerHTML = '';
+        this.history.forEach(function(history, position)
+        {
+            var historyLi = document.createElement('li');
+            historyLi.id = position;
+            historyLi.textContent = history.calculation;
+            historyUl.appendChild(historyLi);
+        }, this);
+    }
+};
 
-function keyboardKeys(ev) {
-
-    var button = document.querySelector('button[data-key="' + ev.key + '"]');
+function events()
+{
+    // Array of buttons
     var buttons = document.querySelectorAll('button');
 
-    if (button !== null) {
-        // Add css class with transition
-        button.classList.add('keypress');
-        button = button.innerHTML;
-    }
-
-    // Event listener for removing class with transition with 'transitionend' event
-    buttons.forEach(function(button) {
-        button.addEventListener('transitionend', function(event) {
-            this.classList.remove('keypress');
+    // IIFE for keyboard press
+    (function (buttons)
+    {
+        document.addEventListener('keydown', function(e)
+        {
+            var button = document.querySelector('button[data-key="' + e.key + '"]'),
+                value;
+            if(button) {
+                // Add class for transition effect
+                button.classList.add('keypress');
+                value = button.innerHTML;
+                // Call buttonHandlers function to 'deal' with button value
+                console.log(value);
+                buttonValueHandler(value);
+            }
+            buttons.forEach(function(button)
+            {
+                // Remove keypress class after transition ends
+                button.addEventListener('transitionend', function(e) {
+                    this.classList.remove('keypress');
+                });
+            });
         });
-    });
+    })(buttons);
 
-    switch (button) {
-
-        case 'AC':
-            calculatorMethods.clearAll();
-            break;
-
-        case '<span class="ion-backspace"></span>':
-            calculatorMethods.deleteOne();
-            break;
-
-        case '+':
-            calculatorMethods.basicOperations('+');
-            break;
-
-        case '-':
-            calculatorMethods.basicOperations('-');
-            break;
-
-        case '×':
-            calculatorMethods.basicOperations('*');
-            break;
-
-        case '÷':
-            calculatorMethods.basicOperations('/');
-            break;
-
-        case '=':
-            calculatorMethods.equal('=');
-            break;
-
-        case 'sin':
-            calculatorMethods.sinus();
-            break;
-
-        case 'cos':
-            calculatorMethods.cosinus();
-            break;
-
-        case '=':
-            calculatorMethods.equal('=');
-            break;
-
-        case '1':
-            calculatorMethods.numbers(button);
-            break;
-
-        case '2':
-            calculatorMethods.numbers(button);
-            break;
-
-        case '3':
-            calculatorMethods.numbers(button);
-            break;
-
-        case '4':
-            calculatorMethods.numbers(button);
-            break;
-
-        case '5':
-            calculatorMethods.numbers(button);
-            break;
-
-        case '6':
-            calculatorMethods.numbers(button);
-            break;
-
-        case '7':
-            calculatorMethods.numbers(button);
-            break;
-
-        case '8':
-            calculatorMethods.numbers(button);
-            break;
-
-        case '9':
-            calculatorMethods.numbers(button);
-            break;
-
-    }
-
-    topCalculation.innerHTML = topScreen;
-    bottomCalculation.innerHTML = bottomScreen;
+    // IIFE for mouse click handling
+    (function (buttons)
+    {
+        buttons.forEach(function(button)
+        {
+            button.addEventListener('click', function(e)
+            {
+                var value = this.innerHTML;
+                // Call buttonHandlers function to 'deal' with button value
+                buttonValueHandler(value);
+            });
+        });
+    })(buttons);
 }
 
-function mouseClick() {
+// Global variables
+var number = '',
+    prevOperation = '',
+    defaultValue = '0';
 
-    var value = this.innerHTML;
+// To set zero at starting point
+document.getElementById('bottom-calculation').innerHTML = defaultValue;
 
-    switch (value) {
 
-        case 'AC':
-            calculatorMethods.clearAll();
+function buttonValueHandler(value)
+{
+    var topScreen = document.getElementById('top-calculation'),
+        bottomScreen = document.getElementById('bottom-calculation');
+
+    switch(value)
+    {
+        case 'CA':
+            topScreen.innerHTML = '';
+            bottomScreen.innerHTML = '';
+            number = '';
             break;
-
         case '<span class="ion-backspace"></span>':
-            calculatorMethods.deleteOne();
+            number = number.slice(0, -1);
+            bottomScreen.innerHTML = number;
             break;
-
         case '+/-':
-            calculatorMethods.negate();
+            if(number.match(/\d+/) !== null)
+            {
+                var history = historyData.history;
+                if(prevOperation === 'negate' && parseFloat(number) === -parseFloat(history[history.length - 1].number))
+                {
+                    historyData.addHistory(number.toString() ,'negate(' + history[history.length - 1].calculation + ')');
+                }
+                else
+                {
+                    historyData.addHistory(number.toString() ,'negate(' + number + ')');
+                }
+                number = (-parseFloat(number)).toString();
+                bottomScreen.innerHTML = number;
+                historyData.displayHistory();
+                prevOperation = 'negate';
+            }
             break;
+        case 'x<sup>y</sup>':
+            value = '^';
+            if(number.match(/\d+/) !== null)
+            {
+                calculationData.addNumber(number, 'power');
+                topScreen.innerHTML = number + value;
+                number = '';
+                prevOperation = 'power';
+            }
 
-        case 'sin':
-            calculatorMethods.sinus();
             break;
-
-        case 'cos':
-            calculatorMethods.cosinus();
-            break;
-
-        case '√':
-            calculatorMethods.squareRoot();
-            break;
-
-        case 'x<sup>n</sup>':
-            calculatorMethods.basicOperations('^');
-            break;
-
-        case '(...)':
-            calculatorMethods.brackets();
+        case '÷':
+            value = '/';
             break;
 
         case '=':
-            calculatorMethods.equal('=');
-            break;
 
-        case '.':
-            calculatorMethods.dot(value);
             break;
-
-        case '+':
-            calculatorMethods.basicOperations('+');
-            break;
-
-        case '-':
-            calculatorMethods.basicOperations('-');
-            break;
-
-        case '÷':
-            calculatorMethods.basicOperations('/');
-            break;
-
-        case '×':
-            calculatorMethods.basicOperations('*');
-            break;
-
         default:
-            calculatorMethods.numbers(value);
+            number  += value;
+            bottomScreen.innerHTML = number;
     }
-
-    topCalculation.innerHTML = topScreen;
-    bottomCalculation.innerHTML = bottomScreen;
+    // To set zero value on bottom screen if any other values are not present
+    if(number === '')
+    {
+        bottomScreen.innerHTML = defaultValue;
+    }
 }
+
+
+
+
+

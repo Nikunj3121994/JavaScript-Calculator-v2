@@ -33,16 +33,16 @@ body {
 
 #calculation { background: linear-gradient(-90deg, #78909c, #b0bec5); height: 100px; }
 
-#top-calculation { 
-    height: 40px; 
-    font-size: 25px; 
-    padding: 5px 7px; 
+#top-calculation {
+    height: 40px;
+    font-size: 25px;
+    padding: 5px 7px;
 }
 
-#bottom-calculation { 
-    height: 60px; 
-    font-size: 45px; 
-    padding: 5px 2px; 
+#bottom-calculation {
+    height: 60px;
+    font-size: 45px;
+    padding: 5px 2px;
 }
 
 #bottom-calculation, #top-calculation { text-align: right; overflow: hidden; }
@@ -58,7 +58,7 @@ body {
 }
 
 .buttons {
-    transition: all .5s ease-in-out; 
+    transition: all .5s ease-in-out;
     background-color: #455a64;
     border: none;
     border-right: 1px solid #607d8b;
@@ -71,9 +71,9 @@ body {
 
 .buttons:last-child { border-right: none; }
 
-.buttons:hover { 
-    background-color: #607d8b; 
-    border: 1px solid #ffb74d; 
+.buttons:hover {
+    background-color: #607d8b;
+    border: 1px solid #ffb74d;
 }
 
 .row:last-child { border-bottom: none; }
@@ -90,10 +90,10 @@ body {
 
 #equal:hover { border: none; }
 
-.keypress { 
+.keypress {
    transition: all .1s ease-in-out;
-   background-color: #607d8b; 
-   border: 1px solid #ffb74d; 
+   background-color: #607d8b;
+   border: 1px solid #ffb74d;
 }
 
 @media screen and (min-width: 830px) {
@@ -111,18 +111,18 @@ body {
         display: -ms-flexbox;
         display: flex;
         width: 800px;
-        margin: auto;        
+        margin: auto;
     }
 
     #history {
-        overflow: hidden;
+        overflow: auto;
         display: block;
         -webkit-box-flex: 1;
         -ms-flex: 1;
         flex: 1;
         box-shadow: 0 100px 200px #607d8b;
         width: 300px;
-      
+        height: 525px;
     }
 
     #calculator {
@@ -131,7 +131,7 @@ body {
         flex: 1;
         box-shadow: 0 100px 200px #607d8b; 
     }
-    
+
     #bottom-calculation, #top-calculation { max-width: 450px; }
 
     .buttons {
