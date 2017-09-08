@@ -47,6 +47,7 @@ var historyData =
             calculation: calculation,
             time: time
         });
+        this.displayHistory();
     },
     removeOne: function(position) {
         this.history.splice(position, 1);
@@ -151,24 +152,6 @@ function buttonValueHandler(value)
             resetNumber = true;
         }
     }
-    doMath('2+3+4-2-9*2');
-    function doMath(string)
-    {
-        var operators =
-            {
-                '*': function(a, b) { return a * b; },
-                '/': function(a, b) { return a / b; },
-                '+': function(a, b) { return a + b; },
-                '-': function(a, b) { return a - b; }
-            },
-            operatorRegex = /[-+/*]/g,
-            numbersRegex = /\d+/g,
-            operatorsArray = string.match(operatorRegex),
-            numbersArray = string.match(numbersRegex);
-
-            console.log(numbersArray, operatorsArray);
-
-    }
 
     switch(value)
     {
@@ -217,17 +200,14 @@ function buttonValueHandler(value)
             break;
 
         case '=':
-            calculation = eval(calculation);
-
+            calculation = eval(calculation).toFixed(8).toString().replace(/\.0+$/, '');
+            number = calculation;
+            topScreen.innerHTML = '';
+            historyData.addHistory(display + ' = ' + calculation, displayTime('history'));
+            display = calculation;
+            resetNumber = true;
             break;
         default:
-            if(resetAll)
-            {
-                calculation = '';
-                display = '';
-                number = '';
-                operation = false;
-            }
             if(resetNumber)
             {
                 number = '';
@@ -236,11 +216,8 @@ function buttonValueHandler(value)
             calculation += value;
             display += value;
             number += value;
+            
     }
     bottomScreen.innerHTML = number;
 }
-
-
-
-
 
