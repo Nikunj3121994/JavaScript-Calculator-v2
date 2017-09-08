@@ -1,9 +1,11 @@
-@import url('https://fonts.googleapis.com/css?family=Lato');
+@import url('https://fonts.googleapis.com/css?family=Lato:100,300');
 
 * {
     -webkit-box-sizing: border-box;
     box-sizing: border-box;
-    font-family: 'Lato', sans-serif;
+    -webkit-font-smoothing: antialiased !important;
+    font-family: Lato, sans-serif;
+    font-weight: 300 !important;
 }
 
 body {
@@ -33,7 +35,6 @@ body {
     margin: 0;
     color: #ccc;
     font-size: 25px;
-    font-weight: 200;
     border-bottom: 1px solid #607d8b;
     padding-bottom: 10px;
 }
@@ -50,7 +51,7 @@ body {
     list-style-type: none;
     padding: 6px 0;
     border-bottom: 1px solid #607d8b;
-    font-size: 18px;
+    font-size: 15px;
 }
 
 /* Calculator tab */
@@ -58,6 +59,8 @@ body {
 
 #top-frame-calculator {
     background-color: #607d8b;
+    display: -webkit-box;
+    display: -ms-flexbox;
     display: flex;
     color: #ccc;
     height: 25px;
@@ -67,17 +70,15 @@ body {
     font-size: 16px;
     padding: 2px 5px;
     margin: 0;
-    font-weight: 300;
 }
 
-#date { flex: 1; text-align: left; }
+#date { -webkit-box-flex: 1; -ms-flex: 1; flex: 1; text-align: left; }
 
-#time { flex: 1; text-align: right; }
+#time { -webkit-box-flex: 1; -ms-flex: 1; flex: 1; text-align: right; }
 
 #calculation {
     background-color: #607d8b;
     color: #ccc;
-    font-weight: 100;
 }
 
 #bottom-calculation, #top-calculation { text-align: right; overflow: hidden; }
@@ -106,14 +107,16 @@ body {
 }
 
 .buttons {
+    -webkit-transition: all .5s ease-in-out;
     transition: all .5s ease-in-out;
     background-color: #455a64;
     border: none;
     border-right: 2px solid #607d8b;
-    font-weight: 100;
     color: #ccc;
     font-size: 28px;
-    flex: 20%;
+    -webkit-box-flex: 20%;
+        -ms-flex: 20%;
+            flex: 20%;
     height: 70px;
 }
 
@@ -123,7 +126,7 @@ body {
 
 .buttons:hover {
     background-color: #607d8b;
-    color: #455a64;
+    font-weight: bold;
 }
 
 .operations {
@@ -136,7 +139,9 @@ body {
     border-bottom: none;
     color: black;
     font-size: 30px;
-    flex: 40%;
+    -webkit-box-flex: 40%;
+        -ms-flex: 40%;
+            flex: 40%;
 }
 
 #equal:hover {
@@ -145,6 +150,7 @@ body {
 
 /* Class for transition effect on keyboard press */
 .keypress {
+   -webkit-transition: all .1s ease-in-out;
    transition: all .1s ease-in-out;
    background-color: #607d8b;
    font-size: 250%;
@@ -190,12 +196,14 @@ body {
     #bottom-calculation, #top-calculation { max-width: 400px; }
 
     .buttons {
-        flex: none;
+        -webkit-box-flex: 0;
+            -ms-flex: none;
+                flex: none;
         height: 65px;
         width: 80px;
     }
 
-    #equal { width: 160px; flex: none; }
+    #equal { width: 160px; -webkit-box-flex: 0; -ms-flex: none; flex: none; }
 
-    #equal:hover { transform: scale(1.1); }
+    #equal:hover { -webkit-transform: scale(1.1); transform: scale(1.1); }
 }
