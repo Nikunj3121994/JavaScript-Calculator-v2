@@ -10,7 +10,8 @@
 
         <title>JavaScript Calculator</title>
 
-        <link rel="stylesheet" href="css/style.css" type="text/css">
+        <link rel="stylesheet" media="all" href="css/style.css" type="text/css">
+        <link rel="stylesheet" media="(min-width: 730px)" href="css/large-screens.css" type="text/css">
         <link rel="stylesheet" href="css/ionicons.css" type="text/css">
 
     </head>
@@ -18,19 +19,6 @@
 
 
         <div class="container">
-
-            <div id="history">
-                <div id="top-frame-history">
-                    <p>
-                        <span class="ion-android-time"></span>
-                        History
-                    </p>
-                </div>
-                <div id="history-list">
-                    <ul></ul>
-                </div>
-
-            </div>
 
             <div id="calculator">
                 <div id="top-frame-calculator">
@@ -75,6 +63,19 @@
                     <button data-key="0" class="buttons">0</button>
                     <button data-key="(...)" class="buttons operations">(...)</button>
                     <button data-key="Enter" class="buttons operations" id="equal">=</button>
+                </div>
+            </div>
+
+
+            <div id="history">
+                <div id="top-frame-history">
+                    <p>History</p>
+                </div>
+                <div id="history-list">
+                    <ul></ul>
+                </div>
+                <div id="delete-history">
+                    <span class="ion-ios-trash-outline"></span>
                 </div>
             </div>
 
