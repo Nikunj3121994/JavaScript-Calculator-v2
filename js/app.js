@@ -14,10 +14,11 @@ this.onload = function() {
 var number = '',
     display = '',
     calculation = '',
-    previousValue = '',
+    previousOperation = '',
     match;
 const DEFAULT_VALUE = '0';
-const MEDIA_QUERIE = window.matchMedia( "(max-width: 729px) ");
+// constant for matching devices with width smaller than 730px
+const MEDIA_QUERIE = window.matchMedia( "(max-width: 729px)" );
 
 function displayTime(where)
 {
@@ -60,6 +61,7 @@ var historyData =
     },
     removeOne: function(position) {
         this.history.splice(position, 1);
+        this.displayHistory();
     },
     removeAll: function() {
         this.history = [];
@@ -73,7 +75,9 @@ var historyData =
         {
             var historyLi = document.createElement('li');
             historyLi.id = position;
-            historyLi.textContent = history.time + ' | ' + history.calculation;
+            historyLi.innerHTML = '<div class="history-text"><span class="time"><span class="ion-ios-clock-outline"></span>' + ' ' + history.time + '</span>' + 
+                                  '<p class="history">' + history.calculation + '</p></div>' + 
+                                  '<div class="remove"><span class="ion-ios-trash-outline"></span></div>';
             historyUl.appendChild(historyLi);
         }, this);
     },
@@ -88,13 +92,15 @@ function events()
 {
     // Array of buttons
     var buttons = document.querySelectorAll('button'),
-        deleteHistoryButton = document.getElementById('delete-history');
+        deleteHistoryButton = document.getElementById('delete-history'),
+        historyUl = document.querySelector('ul');
 
     // IIFE for keyboard press
     (function (buttons)
     {
         document.addEventListener('keydown', function(e)
         {
+            // Bind pressed key with data-key attribute on each button
             var button = document.querySelector('button[data-key="' + e.key + '"]'),
                 value;
             if(button) {
@@ -134,11 +140,13 @@ function events()
     {
         button.addEventListener('click', function(e)
         {
+            // Delete all history and remove whole history tab from displaying on smaller devices
             if(MEDIA_QUERIE.matches)
             {
                 historyData.removeAll();
                 document.getElementById('history').style.display = 'none';
             }
+            // Delete all history and remove only the trash can from bottom of the history panel
             else
             {
                 historyData.removeAll();
@@ -146,6 +154,36 @@ function events()
             }
         });
     })(deleteHistoryButton);
+
+    // IIFE for delete-one button
+    (function (list)
+    {
+        list.addEventListener('click', function(e)
+        {
+            // Element which was clicked... if it is a trash can
+            var elementClicked = e.target;
+            // if it is a trash can
+            if(elementClicked.className === 'ion-ios-trash-outline')
+            {
+                // Remove grandparent element 
+                historyData.removeOne(elementClicked.parentNode.parentNode.id);
+                // Remove whole history tab or history trash can depending on screen size
+                if(list.children.length === 0)
+                {
+                    // Remove whole history tab
+                    if(MEDIA_QUERIE.matches)
+                    {
+                        document.getElementById('history').style.display = 'none';
+                    }
+                    // Remove only the trash
+                    else
+                    {
+                        document.getElementById('delete-history').style.display = 'none';
+                    }
+                }
+            }
+        });
+    })(historyUl);
 }
 
 
@@ -161,6 +199,7 @@ function buttonValueHandler(value)
         bottomScreen = document.getElementById('bottom-calculation'),
         history = document.getElementById('history');
 
+    // Function for showing history tab on screens smaller than 730px
     function smallScreens()
     {
         if(MEDIA_QUERIE.matches)
@@ -173,24 +212,28 @@ function buttonValueHandler(value)
     {
         if(number !== '')
         {
-            if(previousValue === 'Equal')
+            // If previous value is equal, we didnt press any number
+            // so we continue with previous result as the first parameter of calculation
+            if(previousOperation === 'Equal')
             {
                 display = calculation;
                 display = display + ' ' + value + ' ';
                 calculation += operator;
             }
-            if(calculation.match(/([-+/*])$/) !== null)
+            // To prevent from adding more than one operator 
+            if(calculation.match(/([-+/*^])$/) !== null)
             {
-                display = display.replace(/\s[-+÷×]\s$/, ' ' + value + ' ');
-                calculation = calculation.replace(/[-+/*]$/, operator);
+                display = display.replace(/\s[-+÷×^]\s$/, ' ' + value + ' ');
+                calculation = calculation.replace(/[-+/*^]$/, operator);
             }
+            // Normal case
             else
             {
                 display = display +  ' ' + value + ' ';
                 calculation += operator;
             }
             topScreen.innerHTML = display;
-            previousValue = 'Basic Operation';
+            previousOperation = 'Basic Operation';
         }
     }
 
@@ -204,13 +247,27 @@ function buttonValueHandler(value)
             topScreen.innerHTML = '';
             break;
         case '<span class="ion-backspace"></span>':
-
+            if(previousOperation !== 'Equal')
+            {
+                if(number !== '')
+                {
+                    number = number.slice(0, -1);
+                    calculation = calculation.slice(0, -1);
+                    display = display.slice(0, -1);
+                    bottomScreen.innerHTML = number;
+                }
+                if(number === '')
+                {
+                    bottomScreen.innerHTML = DEFAULT_VALUE;
+                }
+            }
             break;
         case '+/-':
 
             break;
         case 'x<sup>y</sup>':
-            
+            basicOperations('^');
+
             break;
         case '√':
 
@@ -248,7 +305,7 @@ function buttonValueHandler(value)
                 display = display.replace(/\s[-+÷×]\s$/, '');
             }
             // For continuously clicking equal operator --> Repeat last operation with result & last operand
-            if(previousValue === 'Equal')
+            if(previousOperation === 'Equal')
             {
                 // Find matching operators --> Result is an array of matching operators
                 match = display.match(/\s([-+÷×])\s/g);
@@ -264,13 +321,14 @@ function buttonValueHandler(value)
                 match[match.length - 1] = match[match.length - 1].match(/\s×\s/g) === null ?
                                           match[match.length - 1]                          :
                                           match[match.length - 1].replace(/\s×\s/, '*');
-                // Calculate
+                // Evaluate expression
                 calculation = eval(calculation + match[match.length - 1] + number).toFixed(8).toString().replace(/(\.0+|0+)$/, '');
                 // Display
                 bottomScreen.innerHTML = calculation;
                 historyData.addHistory(display + ' = ' + calculation, displayTime('history'));
                 // Show history delete-all button
                 document.getElementById('delete-history').style.display = 'block';
+                // Show history panel on small screens.
                 smallScreens();
             }
             // If previous value clicked is not equal...
@@ -278,6 +336,7 @@ function buttonValueHandler(value)
             {
                 if(calculation !== '')
                 {
+                    // Evaluate expression
                     calculation = eval(calculation).toFixed(8).toString().replace(/(\.0+|0+)$/, '');
                     topScreen.innerHTML = '';
                     bottomScreen.innerHTML = calculation;
@@ -287,16 +346,16 @@ function buttonValueHandler(value)
                     smallScreens();
                 }
             }
-            previousValue = 'Equal';
+            previousOperation = 'Equal';
             break;
         default:
             // For reseting number value after basic operation clicked
-            if(previousValue === 'Basic Operation')
+            if(previousOperation === 'Basic Operation')
             {
                 number = '';
             }
-            // For reseting everything after calculation expression if we click a number
-            else if (previousValue === 'Equal')
+            // For reseting everything after calculation if we click a number
+            else if (previousOperation === 'Equal')
             {
                 calculation = '';
                 display = '';
@@ -305,7 +364,7 @@ function buttonValueHandler(value)
             calculation += value;
             display += value;
             number += value;
-            previousValue = 'Number';
+            previousOperation = 'Default';
             bottomScreen.innerHTML = number;
     }
 }

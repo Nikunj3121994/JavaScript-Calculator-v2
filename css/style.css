@@ -3,8 +3,8 @@
 * {
     -webkit-box-sizing: border-box;
     box-sizing: border-box;
-    -webkit-font-smoothing: antialiased !important;
     font-family: Lato, sans-serif;
+    -webkit-font-smoothing: antialiased !important;
     font-weight: 300 !important;
 }
 
@@ -14,34 +14,34 @@ body {
     padding: 0;
 }
 
-.container { width: 100%; }
+.container {
+    width: 100%;
+}
 
 /* History tab */
 #history {
-    display: none;
+    color: #ccc;
     background-color: #455a64;
     border: 4px solid #607d8b;
+    display: none;
     padding: 0 10px 0 10px;
 }
 
 #top-frame-history {
     height: 40px;
     margin: 0;
-    padding: 10px 0;
     margin-bottom: 10px;
+    padding: 10px 0;
 }
 
 #top-frame-history p {
-    margin: 0;
-    color: #ccc;
-    font-size: 25px;
     border-bottom: 1px solid #607d8b;
+    margin: 0;
+    font-size: 25px;
     padding-bottom: 10px;
 }
 
 #history-list {
-    color: #ccc;
-    margin-top: 10px;
     height: 100%;
 }
 #history-list ul {
@@ -49,89 +49,100 @@ body {
     padding: 0;
 }
 #history-list li {
-    list-style-type: none;
-    padding: 6px 4px;
+    display: flex;
     border-bottom: 1px solid #607d8b;
-    font-size: 15px;
+    font-size: 20px;
+    list-style-type: none;
 }
-#history-list li:hover {
+.history-text {
+    flex: 90%;
+}
+.remove {
+    flex: 10%;
+    font-size: 25px;
+    padding: 10px 16px;
+}
+.history-text:hover, .remove:hover, #delete-history:hover {
+    color: #ffb74d;
     transition: all 0.5s ease-in-out;
-    background-color: #607d8b;
+}
+.time {
+    font-size: 14px;
+}
+.history {
+    font-size: 18px;
+    margin: 0;
 }
 #delete-history {
     display: none;
-    color: #ccc;
     font-size: 25px;
-
     padding: 0 4px;
 }
-
 /* Calculator tab */
-#calculator { border: 4px solid #607d8b; }
-
+#calculator {
+    color: #ccc;
+    background-color: #607d8b;
+    border: 4px solid #607d8b;
+}
 #top-frame-calculator {
     background-color: #607d8b;
     display: -webkit-box;
     display: -ms-flexbox;
     display: flex;
-    color: #ccc;
     height: 25px;
 }
-
 #top-frame-calculator p {
     font-size: 16px;
     padding: 2px 5px;
     margin: 0;
 }
-
-#date { -webkit-box-flex: 1; -ms-flex: 1; flex: 1; text-align: left; }
-
-#time { -webkit-box-flex: 1; -ms-flex: 1; flex: 1; text-align: right; }
-
-#calculation {
-    background-color: #607d8b;
-    color: #ccc;
+#date {
+    -webkit-box-flex: 1;
+    -ms-flex: 1;
+    flex: 1;
+    text-align: left;
 }
-
-#bottom-calculation, #top-calculation { text-align: right; overflow: hidden; }
-
+#time {
+    -webkit-box-flex: 1;
+    -ms-flex: 1;
+    flex: 1;
+    text-align: right;
+}
+#bottom-calculation, #top-calculation {
+    text-align: right;
+}
 #top-calculation {
-    height: 40px;
     font-size: 25px;
+    height: 40px;
     padding: 5px 7px;
 }
-
 #bottom-calculation {
-    height: 60px;
     font-size: 45px;
+    height: 60px;
     padding: 5px 2px;
 }
-
 .row {
+    border-bottom: 2px solid #607d8b;
     display: -webkit-box;
     display: -ms-flexbox;
     display: flex;
-    border-bottom: 2px solid #607d8b;
 }
-
 .row:last-child {
     border-bottom: none;
 }
-
 .buttons {
-    -webkit-transition: all .5s ease-in-out;
-    transition: all .5s ease-in-out;
     background-color: #455a64;
+    color: #ccc;
     border: none;
     border-right: 2px solid #607d8b;
-    color: #ccc;
     font-size: 28px;
     -webkit-box-flex: 20%;
         -ms-flex: 20%;
             flex: 20%;
     height: 70px;
+    -webkit-transition: all .5s ease-in-out;
+    transition: all .5s ease-in-out;
 }
-
 .buttons:last-child {
     border-right: none;
 }
@@ -142,18 +153,18 @@ body {
 }
 
 .operations {
-    font-size: 22px;
     color: #ffb74d;
+    font-size: 22px;
 }
 
 #equal {
     background-color: #ffb74d;
     border-bottom: none;
     color: black;
-    font-size: 30px;
     -webkit-box-flex: 40%;
         -ms-flex: 40%;
             flex: 40%;
+    font-size: 30px;
 }
 
 #equal:hover {
@@ -162,10 +173,8 @@ body {
 
 /* Class for transition effect on keyboard press */
 .keypress {
+    background-color: #607d8b;
    -webkit-transition: all .1s ease-in-out;
    transition: all .1s ease-in-out;
-   background-color: #607d8b;
-   font-size: 250%;
-
 }
 

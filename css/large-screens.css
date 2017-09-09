@@ -1,48 +1,55 @@
 html, body {
-    height: 100%;
-    width: 100%;
     display: -webkit-box;
     display: -ms-flexbox;
     display: flex;
+    height: 100%;
+    width: 100%;
 }
-
 .container {
     display: -webkit-box;
     display: -ms-flexbox;
     display: flex;
-    width: 700px;
     margin: auto;
+    width: 700px;
 }
-
 #history {
+    border-radius: 8px 0 0 8px;
+    border-right: none;
     display: block;
     -webkit-box-flex: 1;
     -ms-flex: 1;
     flex: 1;
+    height: 466px;
     order: 1;
     width: 300px;
-    height: 466px;
-    border-radius: 8px 0 0 8px;
-    border-right: none;
 }
 #history-list {
-    overflow: auto;
     height: 370px;
+    overflow: auto;
+}
+.time {
+    font-size: 14px;
+}
+.history {
+    font-size: 16px;
+}
+.remove {
+    padding: 10px;
 }
 #delete-history {
     border-top: 1px solid #607d8b;
 }
-
 #calculator {
+    border-radius: 0 8px 8px 0;
     -webkit-box-flex: 1;
     -ms-flex: 1;
     flex: 1;
     order: 2;
-    border-radius: 0 8px 8px 0;
     }
 
-#bottom-calculation, #top-calculation { max-width: 400px; }
-
+#bottom-calculation, #top-calculation {
+    max-width: 400px;
+}
 .buttons {
     -webkit-box-flex: 0;
             -ms-flex: none;
@@ -51,6 +58,14 @@ html, body {
     width: 80px;
 }
 
-#equal { width: 160px; -webkit-box-flex: 0; -ms-flex: none; flex: none; }
+#equal {
+    -webkit-box-flex: 0;
+    -ms-flex: none;
+    flex: none;
+    width: 160px;
+}
 
-#equal:hover { -webkit-transform: scale(1.1); transform: scale(1.1); }
+#equal:hover {
+    -webkit-transform: scale(1.1);
+    transform: scale(1.1);
+}
