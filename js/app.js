@@ -1,4 +1,13 @@
-/*esversion:6'*/
+// forEach method implementation for older browsers...
+if (!Object.prototype.forEach) {
+     Object.prototype.forEach = function(fn, scope) {
+        for(var i = 0, len = this.length; i < len; ++i) {
+             fn.call(scope, this[i], i, this);
+         }
+     };
+ }
+
+
 this.onload = function() {
 
     displayTime('calculator');
@@ -10,15 +19,7 @@ this.onload = function() {
 };
 
 
-// Global variables
-var number = '',
-    display = '',
-    calculation = '',
-    previousOperation = '',
-    match;
-const DEFAULT_VALUE = '0';
-// constant for matching devices with width smaller than 730px
-const MEDIA_QUERIE = window.matchMedia( "(max-width: 729px)" );
+
 
 function displayTime(where)
 {
@@ -70,20 +71,19 @@ var historyData =
     displayHistory: function()
     {
         var historyUl = document.querySelector('ul');
+        // Reset content of unordered list
         historyUl.innerHTML = '';
         this.history.forEach(function(history, position)
         {
+            // Create list element
             var historyLi = document.createElement('li');
+            // Ad an id for deleting
             historyLi.id = position;
             historyLi.innerHTML = '<div class="history-text"><span class="time"><span class="ion-ios-clock-outline"></span>' + ' ' + history.time + '</span>' + 
                                   '<p class="history">' + history.calculation + '</p></div>' + 
                                   '<div class="remove"><span class="ion-ios-trash-outline"></span></div>';
             historyUl.appendChild(historyLi);
         }, this);
-    },
-    deleteButton: function()
-    {
-        var button = document.createElement('button');
     }
 };
 
@@ -165,32 +165,34 @@ function events()
             // if it is a trash can
             if(elementClicked.className === 'ion-ios-trash-outline')
             {
-                // Remove grandparent element 
+                // Remove grandparent element
                 historyData.removeOne(elementClicked.parentNode.parentNode.id);
                 // Remove whole history tab or history trash can depending on screen size
                 if(list.children.length === 0)
                 {
                     // Remove whole history tab
                     if(MEDIA_QUERIE.matches)
-                    {
                         document.getElementById('history').style.display = 'none';
-                    }
                     // Remove only the trash
                     else
-                    {
                         document.getElementById('delete-history').style.display = 'none';
-                    }
                 }
             }
         });
     })(historyUl);
 }
 
+// Global variables
+var number = '',
+    display = '',
+    calculation = '',
+    previousOperation = '';
+var DEFAULT_VALUE = '0';
+// constant for matching devices with width smaller than 730px
+var MEDIA_QUERIE = window.matchMedia( "(max-width: 729px)" );
 
-// To set zero at bottom screen 
+// To set zero at bottom screen
 document.getElementById('bottom-calculation').innerHTML = DEFAULT_VALUE;
-
-
 
 // For handling calculator button clicks
 function buttonValueHandler(value)
@@ -203,28 +205,31 @@ function buttonValueHandler(value)
     function smallScreens()
     {
         if(MEDIA_QUERIE.matches)
-        {
-        history.style.display = 'block';
-        }
+            history.style.display = 'block';
     }
 
     function basicOperations(operator)
     {
         if(number !== '')
         {
+            // For adding parenthesis if number has a negative value
+            if(calculation.match(/-\d+\.?\d+?$/))
+            {
+                display = display.replace(/(-\d+\.?\d+?$)/, '($1)');
+                calculation = calculation.replace(/(-\d+\.?\d+?)$/, '($1)');
+            }
             // If previous value is equal, we didnt press any number
             // so we continue with previous result as the first parameter of calculation
-            if(previousOperation === 'Equal')
+            if(previousOperation === 'Equal' || previousOperation === 'Negate' || previousOperation === 'Power' || previousOperation === 'Square Root' || previousOperation === 'Sinus' || previousOperation === 'Cosinus' || previousOperation === 'Factorial')
             {
-                display = calculation;
                 display = display + ' ' + value + ' ';
                 calculation += operator;
             }
-            // To prevent from adding more than one operator 
-            if(calculation.match(/([-+/*^])$/) !== null)
+            // To prevent from adding more than one operator
+            if(calculation.match(/([-+/*])$/) !== null)
             {
-                display = display.replace(/\s[-+÷×^]\s$/, ' ' + value + ' ');
-                calculation = calculation.replace(/[-+/*^]$/, operator);
+                display = display.replace(/\s[-+÷×]\s$/, ' ' + value + ' ');
+                calculation = calculation.replace(/[-+/*]$/, operator);
             }
             // Normal case
             else
@@ -234,6 +239,124 @@ function buttonValueHandler(value)
             }
             topScreen.innerHTML = display;
             previousOperation = 'Basic Operation';
+        }
+    }
+
+    function calculate()
+    {
+        if(calculation.match(/([-+/*])$/))
+        {
+            // To remove operator from string that is a last character in strings if it exists (2+2+) --> 2+2
+            calculation = calculation.replace(/([-+/*])$/, '');
+            display = display.replace(/\s[-+÷×]\s$/, '');
+        }
+        // For continuously clicking equal operator --> Repeat last operation with result & last operand
+        if(previousOperation === 'Equal')
+        {
+            if(display.match(/^sqr/))
+            {
+                display = 'sqr(' + calculation + ')';
+                calculation = Math.pow(parseFloat(calculation), 2).toFixed(8).toString().replace().replace(/(\.0+|0+)$/, '');
+                historyData.addHistory(display + ' = ' + calculation, displayTime('history'));
+                bottomScreen.innerHTML = calculation;
+                topScreen.innerHTML = display;
+            }
+            else if(display.match(/^√/))
+            {
+                display = '√(' + calculation + ')';
+                calculation = Math.sqrt(parseFloat(calculation)).toFixed(8).toString().replace().replace(/(\.0+|0+)$/, '');
+                historyData.addHistory(display + ' = ' + calculation, displayTime('history'));
+                bottomScreen.innerHTML = calculation;
+                topScreen.innerHTML = display;
+            }
+            else if(display.match(/^sin/))
+            {
+                display = 'sin(' + calculation + ')';
+                calculation = Math.sqrt(parseFloat(calculation)).toFixed(8).toString().replace().replace(/(\.0+|0+)$/, '');
+                historyData.addHistory(display + ' = ' + calculation, displayTime('history'));
+                bottomScreen.innerHTML = calculation;
+                topScreen.innerHTML = display;
+            }
+            else if(display.match(/^cos/))
+            {
+                display = 'cos(' + calculation + ')';
+                calculation = Math.sqrt(parseFloat(calculation)).toFixed(8).toString().replace().replace(/(\.0+|0+)$/, '');
+                historyData.addHistory(display + ' = ' + calculation, displayTime('history'));
+                bottomScreen.innerHTML = calculation;
+                topScreen.innerHTML = display;
+            }
+            else
+            {
+                // Return from function if display string does not have an operator
+                if(display.match(/[-+÷×]\s\d+/) === null)
+                {
+                    return;
+                }
+                // Find operators and numbers --> Result is an array of matching operators
+                var match = display.match(/\s([-+÷×])\s/g);
+                // Add last matching operator to calculation & number for displaying history
+                // And add parenthesis if it is a negative number
+                if(calculation.match(/^\-/) && number.match(/\-/))
+                    display = '(' + calculation + ')' + match[match.length - 1] + '(' + number + ')';
+                else if (calculation.match(/^\-/))
+                    display = '(' + calculation + ')' + match[match.length - 1] + number;
+                else if (number.match(/\-/))
+                    display = calculation + match[match.length - 1] + '(' + number + ')';
+                else
+                    display = calculation + match[match.length - 1] + number;
+                // If last operator is not a division operator in matching array, leave it as it is
+                // If last operator is a division operator, replace it with a proper division operator for calculation purposes
+                match[match.length - 1] = match[match.length - 1].match(/\s÷\s/g) === null ?
+                                          match[match.length - 1]                          :
+                                          match[match.length - 1].replace(/\s÷\s/, '/');
+                // Same goes for multiplication
+                // We leave addition & subtraction operatos as they are
+                match[match.length - 1] = match[match.length - 1].match(/\s×\s/g) === null ?
+                                          match[match.length - 1]                          :
+                                          match[match.length - 1].replace(/\s×\s/, '*');
+                // Evaluate expression
+                calculation = eval(calculation + match[match.length - 1] + number).toFixed(8).toString().replace(/(\.0+|0+)$/, '');
+                // Display
+                bottomScreen.innerHTML = calculation;
+                historyData.addHistory(display + ' = ' + calculation, displayTime('history'));
+                // Show history delete-all button
+                document.getElementById('delete-history').style.display = 'block';
+                // Show history panel on small screens.
+                smallScreens();
+            }
+        }
+        // If previous value clicked is not equal...
+        else
+        {
+            if(calculation !== '')
+            {
+                // To add parenthesis if last number is a negative one
+                if(calculation.match(/[-+/*]-\d+$/))
+                {
+                    display = display.replace(/(-\d+$)/, '($1)');
+                    calculation = calculation.replace(/(-\d+)$/, '($1)');
+                }
+                // Evaluate expression
+                calculation = eval(calculation).toFixed(8).toString().replace(/(\.0+|0+)$/, '');
+                topScreen.innerHTML = '';
+                bottomScreen.innerHTML = calculation;
+                historyData.addHistory(display + ' = ' + calculation, displayTime('history'));
+                // Show history delete-all button
+                document.getElementById('delete-history').style.display = 'block';
+                // Show history panel on small screens.
+                smallScreens();
+            }
+        }
+        previousOperation = 'Equal';
+    }
+
+    function factorial(n)
+    {
+        if(n === 1)
+            return 1;
+        else
+        {
+            return n * factorial(n - 1);
         }
     }
 
@@ -257,32 +380,151 @@ function buttonValueHandler(value)
                     bottomScreen.innerHTML = number;
                 }
                 if(number === '')
-                {
                     bottomScreen.innerHTML = DEFAULT_VALUE;
-                }
             }
             break;
         case '+/-':
-
+            value = '';
+            if(number !== '')
+            {
+                // To prevent adding minus sign to the previous number that was added already
+                if(previousOperation === 'Basic Operation')
+                    break;
+                if(previousOperation === 'Equal' || previousOperation === 'Negate' || previousOperation === 'Power' || previousOperation === 'Square Root' || previousOperation === 'Sinus' || previousOperation === 'Cosinus' || previousOperation === 'Factorial')
+                {
+                    display = 'negate(' + calculation + ')';
+                    calculation = (-parseFloat(calculation)).toString();
+                    number = calculation;
+                    bottomScreen.innerHTML = calculation;
+                    topScreen.innerHTML = display;
+                    previousOperation = 'Negate';
+                }
+                else
+                {
+                    var oppositeNumber = (-parseFloat(number)).toString();
+                    display = display.replace(/\d+\.?\d+?$/,  oppositeNumber);
+                    calculation = calculation.replace(/\d+\.?\d+?$/, oppositeNumber);
+                    number = oppositeNumber;
+                    bottomScreen.innerHTML = number;
+                    previousOperation = 'Negate';
+                }
+            }
+            previousOperation = 'Negate';
             break;
-        case 'x<sup>y</sup>':
-            basicOperations('^');
-
+        case 'x<sup>2</sup>':
+            if(number !== '')
+            {
+                if(previousOperation === 'Equal' || previousOperation === 'Power' || previousOperation === 'Negate' || previousOperation === 'Square Root' || previousOperation === 'Sinus' || previousOperation === 'Cosinus' || previousOperation === 'Factorial')
+                {
+                    display = 'sqr(' + calculation + ')';
+                    calculation = Math.pow(parseFloat(calculation), 2).toFixed(8).toString().replace(/(\.0+|0+)$/, '');
+                }
+                else
+                {
+                    // To remove operator if it exists on the end of calculation string
+                    if(calculation.match(/[-+/*]$/))
+                        calculation = calculation.replace(/([-+/*])$/, '');
+                    calculation = Math.pow(parseFloat(eval(calculation)), 2).toFixed(8).toString().replace(/(\.0+|0+)$/, '');
+                    display = 'sqr(' + number + ')';
+                }
+                bottomScreen.innerHTML = calculation;
+                topScreen.innerHTML = display;
+                previousOperation = 'Power';
+            }
             break;
         case '√':
-
+            if(number !== '')
+            {
+                if(previousOperation === 'Equal' || previousOperation === 'Power' || previousOperation === 'Negate' || previousOperation === 'Square Root' || previousOperation === 'Sinus' || previousOperation === 'Cosinus' ||previousOperation === 'Factorial')
+                {
+                    display = '√(' + calculation + ')';
+                    calculation = Math.sqrt(parseFloat(calculation)).toFixed(8).toString().replace(/(\.0+|0+)$/, '');
+                }
+                else
+                {
+                    if(calculation.match(/[-+/*]$/))
+                        calculation = calculation.replace(/([-+/*])$/, '');
+                    calculation = Math.sqrt(parseFloat(eval(calculation))).toFixed(8).toString().replace(/(\.0+|0+)$/, '');
+                    display = '√(' + number + ')';
+                }
+                bottomScreen.innerHTML = calculation;
+                topScreen.innerHTML = display;
+                previousOperation = 'Square Root';
+            }
             break;
         case 'sin':
-            
+            if(number !== '')
+            {
+                if(previousOperation === 'Equal' || previousOperation === 'Power' || previousOperation === 'Negate' || previousOperation === 'Square Root' || previousOperation === 'Sinus' || previousOperation === 'Cosinus' || previousOperation === 'Factorial')
+                {
+                    display = 'sin(' + calculation + ')';
+                    calculation = Math.sin(parseFloat(calculation)).toFixed(8).toString().replace(/(\.0+|0+)$/, '');
+                }
+                else
+                {
+                    if(calculation.match(/[-+/*]$/))
+                        calculation = calculation.replace(/([-+/*])$/, '');
+                    calculation = Math.sin(parseFloat(eval(calculation))).toFixed(8).toString().replace(/(\.0+|0+)$/, '');
+                    display = 'sin(' + number + ')';
+                }
+                bottomScreen.innerHTML = calculation;
+                topScreen.innerHTML = display;
+                previousOperation = 'Sinus';
+            }
             break;
         case 'cos':
-            
+            if(number !== '')
+            {
+                if(previousOperation === 'Equal' || previousOperation === 'Power' || previousOperation === 'Negate' || previousOperation === 'Square Root' || previousOperation === 'Sinus' || previousOperation === 'Cosinus' || previousOperation === 'Factorial')
+                {
+                    display = 'cos(' + calculation + ')';
+                    calculation = Math.sqrt(parseFloat(calculation)).toFixed(8).toString().replace(/(\.0+|0+)$/, '');
+                }
+                else
+                {
+                    if(calculation.match(/[-+/*]$/))
+                        calculation = calculation.replace(/([-+/*])$/, '');
+                    calculation = Math.sqrt(parseFloat(eval(calculation))).toFixed(8).toString().replace(/(\.0+|0+)$/, '');
+                    display = 'cos(' + number + ')';
+                }
+                bottomScreen.innerHTML = calculation;
+                topScreen.innerHTML = display;
+                previousOperation = 'Cosinus';
+            }
             break;
-        case '(...)':
-
+        case 'n!':
+            if(number !== '')
+            {
+                if(parseFloat(number) < 1)
+                {
+                    bottomScreen.innerHTML = 'Invalid Operation!';
+                    calculation = '';
+                    numbers = '';
+                    display = '';
+                }
+                else
+                {
+                    calculation = factorial(parseFloat(number)).toString();
+                    display = number + '!';
+                    topScreen.innerHTML = display;
+                    bottomScreen.innerHTML = calculation;
+                    previousOperation = 'Factorial';
+                }
+            }
             break;
         case '.':
-
+            if(number !== '')
+            {
+                if(calculation.match(/\.$/) || calculation.match(/\d+\.\d+$/))
+                    value = '';
+                if(previousOperation === 'Basic Operation') 
+                    number = '';
+                calculation += value;
+                display += value;
+                number += value;
+                previousOperation = 'Dot';
+                bottomScreen.innerHTML = number;
+            }
             break;
         case '÷':
             basicOperations('/');
@@ -298,68 +540,22 @@ function buttonValueHandler(value)
             break;
 
         case '=':
-            if(calculation.match(/([-+/*])$/) !== null)
-            {
-                // To remove operator from string that is a last character in strings if it exists (2+2+) --> 2+2
-                calculation = calculation.replace(/([-+/*])$/, '');
-                display = display.replace(/\s[-+÷×]\s$/, '');
+            if(previousOperation !== 'Basic Operation' || calculation.match(/^-?\d+$/) === null) {
+                calculate();
             }
-            // For continuously clicking equal operator --> Repeat last operation with result & last operand
-            if(previousOperation === 'Equal')
-            {
-                // Find matching operators --> Result is an array of matching operators
-                match = display.match(/\s([-+÷×])\s/g);
-                // Add last matching operator to calculation & number for displaying history
-                display = calculation + match[match.length - 1] + number;
-                // If last operator is not a division operator in matching array, leave it as it is
-                // If last operator is a division operator, replace it with a proper division operator for calculation purposes
-                match[match.length - 1] = match[match.length - 1].match(/\s÷\s/g) === null ?
-                                          match[match.length - 1]                          :
-                                          match[match.length - 1].replace(/\s÷\s/, '/');
-                // Same goes for multiplication
-                // We leave addition & subtraction operatos as they are
-                match[match.length - 1] = match[match.length - 1].match(/\s×\s/g) === null ?
-                                          match[match.length - 1]                          :
-                                          match[match.length - 1].replace(/\s×\s/, '*');
-                // Evaluate expression
-                calculation = eval(calculation + match[match.length - 1] + number).toFixed(8).toString().replace(/(\.0+|0+)$/, '');
-                // Display
-                bottomScreen.innerHTML = calculation;
-                historyData.addHistory(display + ' = ' + calculation, displayTime('history'));
-                // Show history delete-all button
-                document.getElementById('delete-history').style.display = 'block';
-                // Show history panel on small screens.
-                smallScreens();
-            }
-            // If previous value clicked is not equal...
-            else
-            {
-                if(calculation !== '')
-                {
-                    // Evaluate expression
-                    calculation = eval(calculation).toFixed(8).toString().replace(/(\.0+|0+)$/, '');
-                    topScreen.innerHTML = '';
-                    bottomScreen.innerHTML = calculation;
-                    historyData.addHistory(display + ' = ' + calculation, displayTime('history'));
-                    // Show history delete-all button
-                    document.getElementById('delete-history').style.display = 'block';
-                    smallScreens();
-                }
-            }
-            previousOperation = 'Equal';
             break;
         default:
+
             // For reseting number value after basic operation clicked
             if(previousOperation === 'Basic Operation')
-            {
                 number = '';
-            }
             // For reseting everything after calculation if we click a number
-            else if (previousOperation === 'Equal')
+            else if (previousOperation === 'Equal' || previousOperation === 'Power' || previousOperation === 'Negate' || previousOperation === 'Square Root' || previousOperation === 'Sinus' || previousOperation === 'Cosinus' || previousOperation === 'Factorial')
             {
                 calculation = '';
                 display = '';
                 number = '';
+                topScreen.innerHTML = '';
             }
             calculation += value;
             display += value;

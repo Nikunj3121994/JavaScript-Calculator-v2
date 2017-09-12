@@ -49,21 +49,29 @@ body {
     padding: 0;
 }
 #history-list li {
+    display: -webkit-box;
+    display: -ms-flexbox;
     display: flex;
     border-bottom: 1px solid #607d8b;
     font-size: 20px;
     list-style-type: none;
+    padding-bottom: 5px;
 }
 .history-text {
-    flex: 90%;
+    -webkit-box-flex: 90%;
+        -ms-flex: 90%;
+            flex: 90%;
 }
 .remove {
-    flex: 10%;
+    -webkit-box-flex: 10%;
+        -ms-flex: 10%;
+            flex: 10%;
     font-size: 25px;
     padding: 10px 16px;
 }
 .history-text:hover, .remove:hover, #delete-history:hover {
     color: #ffb74d;
+    -webkit-transition: all 0.5s ease-in-out;
     transition: all 0.5s ease-in-out;
 }
 .time {
@@ -117,9 +125,10 @@ body {
     padding: 5px 7px;
 }
 #bottom-calculation {
-    font-size: 45px;
+    overflow: hidden;
+    font-size: 40px;
     height: 60px;
-    padding: 5px 2px;
+    padding: 5px 10px;
 }
 .row {
     border-bottom: 2px solid #607d8b;
