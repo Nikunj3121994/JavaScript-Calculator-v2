@@ -18,9 +18,6 @@ this.onload = function() {
     }, 1000);
 };
 
-
-
-
 function displayTime(where)
 {
     var date = document.getElementById('date'),
@@ -79,8 +76,9 @@ var historyData =
             var historyLi = document.createElement('li');
             // Ad an id for deleting
             historyLi.id = position;
-            historyLi.innerHTML = '<div class="history-text"><span class="time"><span class="ion-ios-clock-outline"></span>' + ' ' + history.time + '</span>' + 
-                                  '<p class="history">' + history.calculation + '</p></div>' + 
+            historyLi.innerHTML = '<div class="history-text"><span class="time"><span class="ion-ios-clock-outline"></span>' + ' ' +
+                                   history.time + '</span>' +
+                                  '<p class="history">' + history.calculation + '</p></div>' +
                                   '<div class="remove"><span class="ion-ios-trash-outline"></span></div>';
             historyUl.appendChild(historyLi);
         }, this);
@@ -94,31 +92,6 @@ function events()
     var buttons = document.querySelectorAll('button'),
         deleteHistoryButton = document.getElementById('delete-history'),
         historyUl = document.querySelector('ul');
-
-    // IIFE for keyboard press
-    (function (buttons)
-    {
-        document.addEventListener('keydown', function(e)
-        {
-            // Bind pressed key with data-key attribute on each button
-            var button = document.querySelector('button[data-key="' + e.key + '"]'),
-                value;
-            if(button) {
-                // Add class for transition effect
-                button.classList.add('keypress');
-                value = button.innerHTML;
-                // Call buttonHandlers function to 'deal' with button value
-                buttonValueHandler(value);
-            }
-            buttons.forEach(function(button)
-            {
-                // Remove keypress class after transition ends
-                button.addEventListener('transitionend', function(e) {
-                    this.classList.remove('keypress');
-                });
-            });
-        });
-    })(buttons);
 
     // IIFE for mouse click handling
     (function (buttons)
@@ -170,10 +143,8 @@ function events()
                 // Remove whole history tab or history trash can depending on screen size
                 if(list.children.length === 0)
                 {
-                    // Remove whole history tab
                     if(MEDIA_QUERIE.matches)
                         document.getElementById('history').style.display = 'none';
-                    // Remove only the trash
                     else
                         document.getElementById('delete-history').style.display = 'none';
                 }
@@ -213,15 +184,16 @@ function buttonValueHandler(value)
         if(number !== '')
         {
             // For adding parenthesis if number has a negative value
-            if(calculation.match(/-\d+\.?\d+?$/))
+            if(previousOperation === 'Negate')
             {
-                display = display.replace(/(-\d+\.?\d+?$)/, '($1)');
-                calculation = calculation.replace(/(-\d+\.?\d+?)$/, '($1)');
+                display = display.replace(/(-\d+(\.)?(\d+)?)$/, '($1)');
+                calculation = calculation.replace(/(-\d+(\.)?(\d+)?)$/, '($1)');
             }
             // If previous value is equal, we didnt press any number
             // so we continue with previous result as the first parameter of calculation
             if(previousOperation === 'Equal' || previousOperation === 'Negate' || previousOperation === 'Power' || previousOperation === 'Square Root' || previousOperation === 'Sinus' || previousOperation === 'Cosinus' || previousOperation === 'Factorial')
             {
+                display = calculation;
                 display = display + ' ' + value + ' ';
                 calculation += operator;
             }
@@ -402,8 +374,9 @@ function buttonValueHandler(value)
                 else
                 {
                     var oppositeNumber = (-parseFloat(number)).toString();
-                    display = display.replace(/\d+\.?\d+?$/,  oppositeNumber);
-                    calculation = calculation.replace(/\d+\.?\d+?$/, oppositeNumber);
+                    // Replace last number in calculation
+                    display = display.replace(/\d+(\.)?(\d+)?$/,  oppositeNumber);
+                    calculation = calculation.replace(/\d+(\.)?(\d+)?$/, oppositeNumber);
                     number = oppositeNumber;
                     bottomScreen.innerHTML = number;
                     previousOperation = 'Negate';
@@ -424,8 +397,8 @@ function buttonValueHandler(value)
                     // To remove operator if it exists on the end of calculation string
                     if(calculation.match(/[-+/*]$/))
                         calculation = calculation.replace(/([-+/*])$/, '');
+                    display = 'sqr(' + eval(calculation).toString() + ')';
                     calculation = Math.pow(parseFloat(eval(calculation)), 2).toFixed(8).toString().replace(/(\.0+|0+)$/, '');
-                    display = 'sqr(' + number + ')';
                 }
                 bottomScreen.innerHTML = calculation;
                 topScreen.innerHTML = display;
@@ -444,10 +417,18 @@ function buttonValueHandler(value)
                 {
                     if(calculation.match(/[-+/*]$/))
                         calculation = calculation.replace(/([-+/*])$/, '');
+                    display = '√(' + eval(calculation).toString() + ')';
                     calculation = Math.sqrt(parseFloat(eval(calculation))).toFixed(8).toString().replace(/(\.0+|0+)$/, '');
-                    display = '√(' + number + ')';
                 }
-                bottomScreen.innerHTML = calculation;
+                if(isNaN(calculation))
+                {
+                    bottomScreen.innerHTML = 'Invalid Input!';
+                    calculation = '';
+                    number = '';
+                    display = '';
+                }
+                else
+                    bottomScreen.innerHTML = calculation;
                 topScreen.innerHTML = display;
                 previousOperation = 'Square Root';
             }
@@ -464,8 +445,8 @@ function buttonValueHandler(value)
                 {
                     if(calculation.match(/[-+/*]$/))
                         calculation = calculation.replace(/([-+/*])$/, '');
+                    display = 'sin(' + eval(calculation).toString() + ')';
                     calculation = Math.sin(parseFloat(eval(calculation))).toFixed(8).toString().replace(/(\.0+|0+)$/, '');
-                    display = 'sin(' + number + ')';
                 }
                 bottomScreen.innerHTML = calculation;
                 topScreen.innerHTML = display;
@@ -484,8 +465,8 @@ function buttonValueHandler(value)
                 {
                     if(calculation.match(/[-+/*]$/))
                         calculation = calculation.replace(/([-+/*])$/, '');
+                    display = 'cos(' + eval(calculation).toString() + ')';
                     calculation = Math.sqrt(parseFloat(eval(calculation))).toFixed(8).toString().replace(/(\.0+|0+)$/, '');
-                    display = 'cos(' + number + ')';
                 }
                 bottomScreen.innerHTML = calculation;
                 topScreen.innerHTML = display;
@@ -517,7 +498,7 @@ function buttonValueHandler(value)
             {
                 if(calculation.match(/\.$/) || calculation.match(/\d+\.\d+$/))
                     value = '';
-                if(previousOperation === 'Basic Operation') 
+                if(previousOperation === 'Basic Operation')
                     number = '';
                 calculation += value;
                 display += value;
