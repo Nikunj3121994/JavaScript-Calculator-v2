@@ -533,11 +533,6 @@ function buttonValueHandler(value)
             }
             break;
         default:
-            if(value === '0')
-            {
-                if(number.match(//))
-                    value = '';
-            }
             // For reseting number value after basic operation clicked
             if(previousOperation === 'Basic Operation')
                 number = '';
