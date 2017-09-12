@@ -145,9 +145,9 @@ body {
     border: none;
     border-right: 2px solid #607d8b;
     font-size: 28px;
-    -webkit-box-flex: 20%;
-        -ms-flex: 20%;
-            flex: 20%;
+            -webkit-box-flex: calc(100% * (1/5));
+                -ms-flex: calc(100% * (1/5));
+                    flex: calc(100% * (1/5));
     height: 70px;
     -webkit-transition: all .5s ease-in-out;
     transition: all .5s ease-in-out;
@@ -170,9 +170,9 @@ body {
     background-color: #ffb74d;
     border-bottom: none;
     color: black;
-    -webkit-box-flex: 40%;
-        -ms-flex: 40%;
-            flex: 40%;
+    -webkit-box-flex: calc(100% * (2/5));
+        -ms-flex: calc(100% * (2/5));
+            flex: calc(100% * (2/5));
     font-size: 30px;
 }
 
@@ -180,10 +180,4 @@ body {
     border: none;
 }
 
-/* Class for transition effect on keyboard press */
-.keypress {
-    background-color: #607d8b;
-   -webkit-transition: all .1s ease-in-out;
-   transition: all .1s ease-in-out;
-}
 

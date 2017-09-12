@@ -468,7 +468,15 @@ function buttonValueHandler(value)
                     display = 'cos(' + eval(calculation).toString() + ')';
                     calculation = Math.sqrt(parseFloat(eval(calculation))).toFixed(8).toString().replace(/(\.0+|0+)$/, '');
                 }
-                bottomScreen.innerHTML = calculation;
+                if(isNaN(calculation))
+                {
+                    bottomScreen.innerHTML = 'Invalid Input';
+                    calculation = '';
+                    number = '';
+                    display = '';
+                }
+                else
+                    bottomScreen.innerHTML = calculation;
                 topScreen.innerHTML = display;
                 previousOperation = 'Cosinus';
             }
@@ -519,14 +527,17 @@ function buttonValueHandler(value)
         case '-':
             basicOperations('-');
             break;
-
         case '=':
             if(previousOperation !== 'Basic Operation' || calculation.match(/^-?\d+$/) === null) {
                 calculate();
             }
             break;
         default:
-
+            if(value === '0')
+            {
+                if(number.match(//))
+                    value = '';
+            }
             // For reseting number value after basic operation clicked
             if(previousOperation === 'Basic Operation')
                 number = '';

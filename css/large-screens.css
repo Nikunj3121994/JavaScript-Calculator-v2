@@ -16,7 +16,9 @@ html, body {
     border-radius: 8px 0 0 8px;
     border-right: none;
     display: block;
-    flex: 35%;
+    -webkit-box-flex: 35%;
+        -ms-flex: 35%;
+            flex: 35%;
     height: 466px;
     -webkit-box-ordinal-group: 2;
         -ms-flex-order: 1;
@@ -40,7 +42,9 @@ html, body {
 }
 #calculator {
     border-radius: 0 8px 8px 0;
-    flex: 50%;
+    -webkit-box-flex: 50%;
+        -ms-flex: 50%;
+            flex: 50%;
     -webkit-box-ordinal-group: 3;
         -ms-flex-order: 2;
             order: 2;
