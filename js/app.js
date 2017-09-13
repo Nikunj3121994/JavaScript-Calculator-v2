@@ -504,7 +504,7 @@ function buttonValueHandler(value)
             break;
         case 'π':
             value = (Math.PI).toFixed(8).toString();
-            if(previousOperation === 'Equal')
+            if(previousOperation === 'Equal' || previousOperation === 'Default')
             {
                 calculation = '';
                 display = '';
