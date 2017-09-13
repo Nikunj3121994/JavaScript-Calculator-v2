@@ -514,7 +514,6 @@ function buttonValueHandler(value)
             calculation += value;
             display += value;
             bottomScreen.innerHTML = number;
-            number = '';
             previousOperation = 'PI';
             break;
         case '÷':
