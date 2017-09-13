@@ -76,8 +76,8 @@ var historyData =
             var historyLi = document.createElement('li');
             // Ad an id for deleting
             historyLi.id = position;
-            historyLi.innerHTML = '<div class="history-text"><span class="time"><span class="ion-ios-clock-outline"></span>' + ' ' +
-                                   history.time + '</span>' +
+            historyLi.innerHTML = '<div class="history-text"><span class="time"><span class="ion-ios-clock-outline"></span>' +
+                                  ' ' + history.time + '</span>' +
                                   '<p class="history">' + history.calculation + '</p></div>' +
                                   '<div class="remove"><span class="ion-ios-trash-outline"></span></div>';
             historyUl.appendChild(historyLi);
@@ -181,7 +181,7 @@ function buttonValueHandler(value)
 
     function basicOperations(operator)
     {
-        if(number !== '')
+        if(calculation !== '')
         {
             // For adding parenthesis if number has a negative value
             if(previousOperation === 'Negate')
@@ -191,7 +191,11 @@ function buttonValueHandler(value)
             }
             // If previous value is equal, we didnt press any number
             // so we continue with previous result as the first parameter of calculation
-            if(previousOperation === 'Equal' || previousOperation === 'Negate' || previousOperation === 'Power' || previousOperation === 'Square Root' || previousOperation === 'Sinus' || previousOperation === 'Cosinus' || previousOperation === 'Factorial')
+            if(previousOperation === 'Equal'             ||
+               previousOperation === 'Negate'            ||
+               previousOperation === 'Factorial'         ||
+               previousOperation === 'Other Operations'  ||
+               previousOperation === 'PI')
             {
                 display = calculation;
                 display = display + ' ' + value + ' ';
@@ -214,6 +218,63 @@ function buttonValueHandler(value)
         }
     }
 
+    function otherOperations(operation)
+    {
+        var validate = previousOperation === 'Equal'            ||
+                       previousOperation === 'Negate'           ||
+                       previousOperation === 'Factorial'        ||
+                       previousOperation === 'Other Operation'  ||
+                       previousOperation === 'PI';
+
+        if(calculation !== '')
+        {
+            if(calculation.match(/[-+/*]$/))
+                calculation = calculation.replace(/([-+/*])$/, '');
+            if(operation === 'sqr' || operation === '√')
+                display = operation + '(' + calculation + ')';
+            else
+                display = operation + '<sub>r</sub>(' + calculation + ')';
+
+            switch(operation)
+            {
+                case 'sin':
+                    if(validate)
+                        calculation = Math.sin(parseFloat(calculation)).toFixed(8).toString().replace(/(\.0+|0+)$/, '');
+                    else
+                        calculation = Math.sin(parseFloat(eval(calculation))).toFixed(8).toString().replace(/(\.0+|0+)$/, '');
+                    break;
+                case 'cos':
+                    if(validate)
+                        calculation = Math.cos(parseFloat(calculation)).toFixed(8).toString().replace(/(\.0+|0+)$/, '');
+                    else
+                        calculation = Math.cos(parseFloat(eval(calculation))).toFixed(8).toString().replace(/(\.0+|0+)$/, '');
+                    break;
+                case 'tan':
+                    if(validate)
+                        calculation = Math.tan(parseFloat(calculation)).toFixed(8).toString().replace(/(\.0+|0+)$/, '');
+                    else
+                        calculation = Math.tan(parseFloat(eval(calculation))).toFixed(8).toString().replace(/(\.0+|0+)$/, '');
+                    break;
+                case 'sqr':
+                    if(validate)
+                        calculation = Math.pow(parseFloat(calculation), 2).toFixed(8).toString().replace(/(\.0+|0+)$/, '');
+                    else
+                        calculation = Math.pow(parseFloat(eval(calculation)), 2).toFixed(8).toString().replace(/(\.0+|0+)$/, '');
+                    break;
+                case '√':
+                    if(validate)
+                        calculation = Math.sqrt(parseFloat(calculation)).toFixed(8).toString().replace(/(\.0+|0+)$/, '');
+                    else
+                        calculation = Math.sqrt(parseFloat(eval(calculation))).toFixed(8).toString().replace(/(\.0+|0+)$/, '');
+                    break;
+            }
+            number = calculation;
+            bottomScreen.innerHTML = calculation;
+            topScreen.innerHTML = display;
+            previousOperation = 'Other Operations';
+        }
+    }
+
     function calculate()
     {
         if(calculation.match(/([-+/*])$/))
@@ -225,34 +286,31 @@ function buttonValueHandler(value)
         // For continuously clicking equal operator --> Repeat last operation with result & last operand
         if(previousOperation === 'Equal')
         {
-            if(display.match(/^sqr/))
+            if(display.match(/^((sqr)|(√)|(sin)|(cos)|(tan))/))
             {
-                display = 'sqr(' + calculation + ')';
-                calculation = Math.pow(parseFloat(calculation), 2).toFixed(8).toString().replace().replace(/(\.0+|0+)$/, '');
-                historyData.addHistory(display + ' = ' + calculation, displayTime('history'));
-                bottomScreen.innerHTML = calculation;
-                topScreen.innerHTML = display;
-            }
-            else if(display.match(/^√/))
-            {
-                display = '√(' + calculation + ')';
-                calculation = Math.sqrt(parseFloat(calculation)).toFixed(8).toString().replace().replace(/(\.0+|0+)$/, '');
-                historyData.addHistory(display + ' = ' + calculation, displayTime('history'));
-                bottomScreen.innerHTML = calculation;
-                topScreen.innerHTML = display;
-            }
-            else if(display.match(/^sin/))
-            {
-                display = 'sin(' + calculation + ')';
-                calculation = Math.sqrt(parseFloat(calculation)).toFixed(8).toString().replace().replace(/(\.0+|0+)$/, '');
-                historyData.addHistory(display + ' = ' + calculation, displayTime('history'));
-                bottomScreen.innerHTML = calculation;
-                topScreen.innerHTML = display;
-            }
-            else if(display.match(/^cos/))
-            {
-                display = 'cos(' + calculation + ')';
-                calculation = Math.sqrt(parseFloat(calculation)).toFixed(8).toString().replace().replace(/(\.0+|0+)$/, '');
+                switch(display.match(/^((sqr)|(√)|(sin)|(cos)|(tan))/)[1])
+                {
+                    case 'sqr':
+                        display = 'sqr(' + calculation + ')';
+                        calculation = Math.pow(parseFloat(calculation), 2).toFixed(8).toString().replace(/(\.0+|0+)$/, '');
+                        break;
+                    case '√':
+                        display = '√(' + calculation + ')';
+                        calculation = Math.sqrt(parseFloat(calculation)).toFixed(8).toString().replace(/(\.0+|0+)$/, '');
+                        break;
+                    case 'sin':
+                        display = 'sin<sub>r</sub>(' + calculation + ')';
+                        calculation = Math.sin(parseFloat(calculation)).toFixed(8).toString().replace(/(\.0+|0+)$/, '');
+                        break;
+                    case 'cos':
+                        display = 'cos<sub>r</sub>(' + calculation + ')';
+                        calculation = Math.cos(parseFloat(calculation)).toFixed(8).toString().replace(/(\.0+|0+)$/, '');
+                        break;
+                    case 'tan':
+                        display = 'tan<sub>r</sub>(' + calculation + ')';
+                        calculation = Math.tan(parseFloat(calculation)).toFixed(8).toString().replace(/(\.0+|0+)$/, '');
+                        break;
+                }
                 historyData.addHistory(display + ' = ' + calculation, displayTime('history'));
                 bottomScreen.innerHTML = calculation;
                 topScreen.innerHTML = display;
@@ -260,7 +318,7 @@ function buttonValueHandler(value)
             else
             {
                 // Return from function if display string does not have an operator
-                if(display.match(/[-+÷×]\s\d+/) === null)
+                if(display.match(/[-+÷×]\s(\(-)?\d+/) === null)
                 {
                     return;
                 }
@@ -289,6 +347,8 @@ function buttonValueHandler(value)
                 // Evaluate expression
                 calculation = eval(calculation + match[match.length - 1] + number).toFixed(8).toString().replace(/(\.0+|0+)$/, '');
                 // Display
+                if(calculation === 'Infinity')
+                    calculation = '0';
                 bottomScreen.innerHTML = calculation;
                 historyData.addHistory(display + ' = ' + calculation, displayTime('history'));
                 // Show history delete-all button
@@ -310,6 +370,8 @@ function buttonValueHandler(value)
                 }
                 // Evaluate expression
                 calculation = eval(calculation).toFixed(8).toString().replace(/(\.0+|0+)$/, '');
+                if(calculation === 'Infinity')
+                    calculation = '0';
                 topScreen.innerHTML = '';
                 bottomScreen.innerHTML = calculation;
                 historyData.addHistory(display + ' = ' + calculation, displayTime('history'));
@@ -324,7 +386,7 @@ function buttonValueHandler(value)
 
     function factorial(n)
     {
-        if(n === 1)
+        if(n === 0)
             return 1;
         else
         {
@@ -340,6 +402,7 @@ function buttonValueHandler(value)
             number = '';
             bottomScreen.innerHTML = DEFAULT_VALUE;
             topScreen.innerHTML = '';
+            previousOperation = 'Clear All';
             break;
         case '<span class="ion-backspace"></span>':
             if(previousOperation !== 'Equal')
@@ -357,19 +420,21 @@ function buttonValueHandler(value)
             break;
         case '+/-':
             value = '';
-            if(number !== '')
+            if(calculation !== '')
             {
                 // To prevent adding minus sign to the previous number that was added already
                 if(previousOperation === 'Basic Operation')
                     break;
-                if(previousOperation === 'Equal' || previousOperation === 'Negate' || previousOperation === 'Power' || previousOperation === 'Square Root' || previousOperation === 'Sinus' || previousOperation === 'Cosinus' || previousOperation === 'Factorial')
+                if(previousOperation === 'Equal'              ||
+                   previousOperation === 'Negate'             ||
+                   previousOperation === 'Factorial'          ||
+                   previousOperation === 'Other Operations')
                 {
                     display = 'negate(' + calculation + ')';
                     calculation = (-parseFloat(calculation)).toString();
                     number = calculation;
                     bottomScreen.innerHTML = calculation;
                     topScreen.innerHTML = display;
-                    previousOperation = 'Negate';
                 }
                 else
                 {
@@ -379,122 +444,43 @@ function buttonValueHandler(value)
                     calculation = calculation.replace(/\d+(\.)?(\d+)?$/, oppositeNumber);
                     number = oppositeNumber;
                     bottomScreen.innerHTML = number;
-                    previousOperation = 'Negate';
                 }
             }
             previousOperation = 'Negate';
             break;
         case 'x<sup>2</sup>':
-            if(number !== '')
-            {
-                if(previousOperation === 'Equal' || previousOperation === 'Power' || previousOperation === 'Negate' || previousOperation === 'Square Root' || previousOperation === 'Sinus' || previousOperation === 'Cosinus' || previousOperation === 'Factorial')
-                {
-                    display = 'sqr(' + calculation + ')';
-                    calculation = Math.pow(parseFloat(calculation), 2).toFixed(8).toString().replace(/(\.0+|0+)$/, '');
-                }
-                else
-                {
-                    // To remove operator if it exists on the end of calculation string
-                    if(calculation.match(/[-+/*]$/))
-                        calculation = calculation.replace(/([-+/*])$/, '');
-                    display = 'sqr(' + eval(calculation).toString() + ')';
-                    calculation = Math.pow(parseFloat(eval(calculation)), 2).toFixed(8).toString().replace(/(\.0+|0+)$/, '');
-                }
-                bottomScreen.innerHTML = calculation;
-                topScreen.innerHTML = display;
-                previousOperation = 'Power';
-            }
+            otherOperations('sqr');
             break;
         case '√':
-            if(number !== '')
-            {
-                if(previousOperation === 'Equal' || previousOperation === 'Power' || previousOperation === 'Negate' || previousOperation === 'Square Root' || previousOperation === 'Sinus' || previousOperation === 'Cosinus' ||previousOperation === 'Factorial')
-                {
-                    display = '√(' + calculation + ')';
-                    calculation = Math.sqrt(parseFloat(calculation)).toFixed(8).toString().replace(/(\.0+|0+)$/, '');
-                }
-                else
-                {
-                    if(calculation.match(/[-+/*]$/))
-                        calculation = calculation.replace(/([-+/*])$/, '');
-                    display = '√(' + eval(calculation).toString() + ')';
-                    calculation = Math.sqrt(parseFloat(eval(calculation))).toFixed(8).toString().replace(/(\.0+|0+)$/, '');
-                }
-                if(isNaN(calculation))
-                {
-                    bottomScreen.innerHTML = 'Invalid Input!';
-                    calculation = '';
-                    number = '';
-                    display = '';
-                }
-                else
-                    bottomScreen.innerHTML = calculation;
-                topScreen.innerHTML = display;
-                previousOperation = 'Square Root';
-            }
+            otherOperations('√');
             break;
         case 'sin':
-            if(number !== '')
-            {
-                if(previousOperation === 'Equal' || previousOperation === 'Power' || previousOperation === 'Negate' || previousOperation === 'Square Root' || previousOperation === 'Sinus' || previousOperation === 'Cosinus' || previousOperation === 'Factorial')
-                {
-                    display = 'sin(' + calculation + ')';
-                    calculation = Math.sin(parseFloat(calculation)).toFixed(8).toString().replace(/(\.0+|0+)$/, '');
-                }
-                else
-                {
-                    if(calculation.match(/[-+/*]$/))
-                        calculation = calculation.replace(/([-+/*])$/, '');
-                    display = 'sin(' + eval(calculation).toString() + ')';
-                    calculation = Math.sin(parseFloat(eval(calculation))).toFixed(8).toString().replace(/(\.0+|0+)$/, '');
-                }
-                bottomScreen.innerHTML = calculation;
-                topScreen.innerHTML = display;
-                previousOperation = 'Sinus';
-            }
+            otherOperations('sin');
             break;
         case 'cos':
-            if(number !== '')
-            {
-                if(previousOperation === 'Equal' || previousOperation === 'Power' || previousOperation === 'Negate' || previousOperation === 'Square Root' || previousOperation === 'Sinus' || previousOperation === 'Cosinus' || previousOperation === 'Factorial')
-                {
-                    display = 'cos(' + calculation + ')';
-                    calculation = Math.sqrt(parseFloat(calculation)).toFixed(8).toString().replace(/(\.0+|0+)$/, '');
-                }
-                else
-                {
-                    if(calculation.match(/[-+/*]$/))
-                        calculation = calculation.replace(/([-+/*])$/, '');
-                    display = 'cos(' + eval(calculation).toString() + ')';
-                    calculation = Math.sqrt(parseFloat(eval(calculation))).toFixed(8).toString().replace(/(\.0+|0+)$/, '');
-                }
-                if(isNaN(calculation))
-                {
-                    bottomScreen.innerHTML = 'Invalid Input';
-                    calculation = '';
-                    number = '';
-                    display = '';
-                }
-                else
-                    bottomScreen.innerHTML = calculation;
-                topScreen.innerHTML = display;
-                previousOperation = 'Cosinus';
-            }
+            otherOperations('cos');
+            break;
+        case 'tan':
+            otherOperations('tan');
             break;
         case 'n!':
-            if(number !== '')
+            if(calculation !== '')
             {
-                if(parseFloat(number) < 1)
+                if(parseFloat(calculation) < 0 || parseFloat(calculation) !== parseInt(calculation, 10))
                 {
-                    bottomScreen.innerHTML = 'Invalid Operation!';
                     calculation = '';
-                    numbers = '';
                     display = '';
+                    number  = '';
+                    bottomScreen.innerHTML = 'Invalid Input!';
                 }
                 else
                 {
-                    calculation = factorial(parseFloat(number)).toString();
-                    display = number + '!';
+                    if(previousOperation === 'Equal' || previousOperation == 'Other Operations')
+                    {
+                        number = calculation;
+                    }
+                    display = eval(calculation).toString() + '!';
+                    calculation = factorial(parseFloat(eval(calculation))).toFixed(8).toString().replace(/(\.0+|0+)$/, '');
                     topScreen.innerHTML = display;
                     bottomScreen.innerHTML = calculation;
                     previousOperation = 'Factorial';
@@ -504,6 +490,7 @@ function buttonValueHandler(value)
         case '.':
             if(number !== '')
             {
+                // To prevent more then one dot on number
                 if(calculation.match(/\.$/) || calculation.match(/\d+\.\d+$/))
                     value = '';
                 if(previousOperation === 'Basic Operation')
@@ -514,6 +501,21 @@ function buttonValueHandler(value)
                 previousOperation = 'Dot';
                 bottomScreen.innerHTML = number;
             }
+            break;
+        case 'π':
+            value = (Math.PI).toFixed(8).toString();
+            if(previousOperation === 'Equal')
+            {
+                calculation = '';
+                display = '';
+                number = '';
+            }
+            number = value;
+            calculation += value;
+            display += value;
+            bottomScreen.innerHTML = number;
+            number = '';
+            previousOperation = 'PI';
             break;
         case '÷':
             basicOperations('/');
@@ -528,17 +530,43 @@ function buttonValueHandler(value)
             basicOperations('-');
             break;
         case '=':
-            if(previousOperation !== 'Basic Operation' || calculation.match(/^-?\d+$/) === null) {
+            if(previousOperation !== 'Basic Operation' || calculation.match(/^((-)?\d+)$/) !== null)
                 calculate();
-            }
             break;
         default:
+            if(value === '0')
+            {
+                if(number === '' || number.match(/^([1-9])/) || number.match(/^(0\.)/))
+                {
+                    value = '0';
+                }
+                else
+                    value = '';
+            }
+            // To remove zero at the begining of the operand (033 --> 33)
+            if(number.match(/^0\d+/))
+            {
+                number = number.replace(/^0/, '');
+                calculation = calculation.replace(/^0/, '');
+                display = display.replace(/^0/, '');
+            }
+            // To remove from any number starting zero if it has one (33 + 033 - 033 --> 33 + 33 - 33)
+            if(calculation.match(/0\d+/))
+            {
+                calculation = calculation.replace(/0(\d+)/, '$1');
+                display = display.replace(/0(\d+)/, '$1');
+            }
             // For reseting number value after basic operation clicked
             if(previousOperation === 'Basic Operation')
                 number = '';
             // For reseting everything after calculation if we click a number
-            else if (previousOperation === 'Equal' || previousOperation === 'Power' || previousOperation === 'Negate' || previousOperation === 'Square Root' || previousOperation === 'Sinus' || previousOperation === 'Cosinus' || previousOperation === 'Factorial')
+            else if (previousOperation === 'Equal'              ||
+                     previousOperation === 'Negate'             ||
+                     previousOperation === 'Factorial'          ||
+                     previousOperation === 'Other Operations')
             {
+                if(previousOperation === 'Other Operations' || previousOperation === 'Square Root' || previousOperation === 'Factorial')
+                    historyData.addHistory(display + ' = ' + calculation, displayTime('history'));
                 calculation = '';
                 display = '';
                 number = '';

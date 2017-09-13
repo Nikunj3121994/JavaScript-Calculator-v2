@@ -10,22 +10,24 @@ html, body {
     display: -ms-flexbox;
     display: flex;
     margin: auto;
-    width: 700px;
+    width: 750px;
 }
 #history {
     border-radius: 8px 0 0 8px;
     border-right: none;
+    border-top: 4px solid #607d8b;
     display: block;
-    -webkit-box-flex: 35%;
-        -ms-flex: 35%;
-            flex: 35%;
-    height: 466px;
+    -webkit-box-flex: 1;
+        -ms-flex: 1;
+            flex: 1;
+    height: 509px;
     -webkit-box-ordinal-group: 2;
         -ms-flex-order: 1;
             order: 1;
+    margin: 0;
 }
 #history-list {
-    height: 370px;
+    height: 410px;
     overflow: auto;
 }
 .time {
@@ -42,18 +44,16 @@ html, body {
 }
 #calculator {
     border-radius: 0 8px 8px 0;
-    -webkit-box-flex: 50%;
-        -ms-flex: 50%;
-            flex: 50%;
+    -webkit-box-flex: 1.3;
+        -ms-flex: 1.3;
+            flex: 1.3;
     -webkit-box-ordinal-group: 3;
         -ms-flex-order: 2;
             order: 2;
-            height: 466px;
+            height: 509px;
+            width: 400px;
     }
 .buttons {
     height: 65px;
 }
-#equal:hover {
-    -webkit-transform: scale(1.1);
-    transform: scale(1.1);
-}
+
