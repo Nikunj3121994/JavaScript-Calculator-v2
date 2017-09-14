@@ -17,6 +17,9 @@ body {
 .container {
     width: 100%;
 }
+.container a {display: block;}
+
+button {display:block;}
 
 /* History tab */
 #history {
