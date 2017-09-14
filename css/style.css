@@ -17,9 +17,6 @@ body {
 .container {
     width: 100%;
 }
-.container a {display: block;}
-
-button {display:block;}
 
 /* History tab */
 #history {
@@ -62,16 +59,12 @@ button {display:block;}
     padding-bottom: 5px;
 }
 .history-text {
-    -webkit-box-flex: 90%;
-        -ms-flex: 90%;
-            flex: 90%;
+    width: 90%;
 }
 .remove {
-    -webkit-box-flex: 10%;
-        -ms-flex: 10%;
-            flex: 10%;
     font-size: 25px;
     padding: 10px 16px;
+    width: 10%;
 }
 .history-text:hover, .remove:hover, #delete-history:hover {
     color: #ffb74d;
@@ -95,7 +88,6 @@ button {display:block;}
     color: #ccc;
     background-color: #607d8b;
     border: 4px solid #607d8b;
-    border-bottom: none;
     height: 100%;
 }
 
@@ -112,15 +104,11 @@ button {display:block;}
     padding: 2px 5px;
 }
 #date {
-    -webkit-box-flex: 1;
-    -ms-flex: 1;
-    flex: 1;
+    width: 50%;
     text-align: left;
 }
 #time {
-    -webkit-box-flex: 1;
-    -ms-flex: 1;
-    flex: 1;
+    width: 50%;
     text-align: right;
 }
 #bottom-calculation, #top-calculation {
@@ -138,30 +126,19 @@ button {display:block;}
     padding: 5px 10px;
 }
 .row {
-    border-bottom: 2px solid #607d8b;
     display: -webkit-box;
     display: -ms-flexbox;
     display: flex;
 }
-.row:last-child {
-    border-bottom: none;
-}
 .buttons {
     background-color: #455a64;
     color: #ccc;
-    border: none;
-    border-right: 2px solid #607d8b;
+    border: 1px solid #607d8b;
     font-size: 28px;
-    -webkit-box-flex: 1 1 auto;
-        -ms-flex: 1 1 auto;
-            flex: 1 1 auto;
     height: 70px;
-    width: 100%;
+    width: 20%;
     -webkit-transition: all .5s ease-in-out;
     transition: all .5s ease-in-out;
-}
-.buttons:last-child {
-    border-right: none;
 }
 
 .buttons:hover {
@@ -175,13 +152,11 @@ button {display:block;}
 
 #equal {
     background-color: #ffb74d;
+    border-bottom: none;
     color: black;
-    -webkit-box-flex: 60%;
-        -ms-flex: 60%;
-            flex: 1;
     font-size: 30px;
     height: 40px;
-    margin: 1px auto 4px auto;
+    width: 100%;
 }
 
 
