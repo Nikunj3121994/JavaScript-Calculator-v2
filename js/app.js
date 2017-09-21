@@ -20,14 +20,14 @@ this.onload = function() {
 
 function displayTime(where)
 {
-    var date = document.getElementById('date'),
-        clock = document.getElementById('time'),
+    var date        = document.getElementById('date'),
+        clock       = document.getElementById('time'),
         currentTime = new Date();
 
     if(where === 'history')
     {
         return function() {
-            var hour = this.getHours().toString(),
+            var hour    = this.getHours().toString(),
                 minutes = this.getMinutes().toString();
            return hour + ':' + (minutes.length === 1 ? '0' + minutes : minutes);
         }.call(currentTime);
@@ -37,7 +37,7 @@ function displayTime(where)
         return function() {
             var re = /^(\w+)\s(\w+\s\d+)\s\d+$/;
             clock.innerHTML = '<p>' + this.toLocaleTimeString() + '</p>';
-            date.innerHTML = '<p>' + this.toDateString().replace(re, '$1, $2') + '</p>';
+            date.innerHTML  = '<p>' + this.toDateString().replace(re, '$1, $2') + '</p>';
         }.call(currentTime);
     }
 }
@@ -73,9 +73,9 @@ var historyData =
         this.history.forEach(function(history, position)
         {
             // Create list element
-            var historyLi = document.createElement('li');
+            var historyLi       = document.createElement('li');
             // Ad an id for deleting
-            historyLi.id = position;
+            historyLi.id        = position;
             historyLi.innerHTML = '<div class="history-text"><span class="time"><span class="ion-ios-clock-outline"></span>' +
                                   ' ' + history.time + '</span>' +
                                   '<p class="history">' + history.calculation + '</p></div>' +
@@ -89,9 +89,9 @@ var historyData =
 function events()
 {
     // Array of buttons
-    var buttons = document.querySelectorAll('button'),
+    var buttons             = document.querySelectorAll('button'),
         deleteHistoryButton = document.getElementById('delete-history'),
-        historyUl = document.querySelector('ul');
+        historyUl           = document.querySelector('ul');
 
     // IIFE for mouse click handling
     (function (buttons)
@@ -154,11 +154,11 @@ function events()
 }
 
 // Global variables
-var number = '',
-    display = '',
-    calculation = '',
+var number            = '',
+    display           = '',
+    calculation       = '',
     previousOperation = '';
-var DEFAULT_VALUE = '0';
+var DEFAULT_VALUE     = '0';
 // constant for matching devices with width smaller than 730px
 var MEDIA_QUERIE = window.matchMedia( "(max-width: 729px)" );
 
@@ -168,9 +168,9 @@ document.getElementById('bottom-calculation').innerHTML = DEFAULT_VALUE;
 // For handling calculator button clicks
 function buttonValueHandler(value)
 {
-    var topScreen = document.getElementById('top-calculation'),
+    var topScreen    = document.getElementById('top-calculation'),
         bottomScreen = document.getElementById('bottom-calculation'),
-        history = document.getElementById('history');
+        history      = document.getElementById('history');
 
     // Function for showing history tab on screens smaller than 730px
     function smallScreens()
@@ -186,7 +186,7 @@ function buttonValueHandler(value)
             // For adding parenthesis if number has a negative value
             if(previousOperation === 'Negate')
             {
-                display = display.replace(/(-\d+(\.)?(\d+)?)$/, '($1)');
+                display     = display.replace(/(-\d+(\.)?(\d+)?)$/, '($1)');
                 calculation = calculation.replace(/(-\d+(\.)?(\d+)?)$/, '($1)');
             }
             // If previous value is equal, we didnt press any number
@@ -197,8 +197,8 @@ function buttonValueHandler(value)
                previousOperation === 'Other Operations'  ||
                previousOperation === 'PI')
             {
-                display = calculation;
-                display = display + ' ' + value + ' ';
+                display      = calculation;
+                display      = display + ' ' + value + ' ';
                 calculation += operator;
             }
             // To prevent from adding more than one operator
@@ -210,11 +210,11 @@ function buttonValueHandler(value)
             // Normal case
             else
             {
-                display = display +  ' ' + value + ' ';
+                display      = display +  ' ' + value + ' ';
                 calculation += operator;
             }
             topScreen.innerHTML = display;
-            previousOperation = 'Basic Operation';
+            previousOperation   = 'Basic Operation';
         }
     }
 
@@ -271,17 +271,17 @@ function buttonValueHandler(value)
             if(calculation === 'NaN')
             {
                 bottomScreen.innerHTML = 'Invalid Input!';
-                calculation = '';
-                number = '';
-                topScreen.innerHTML = display;
-                display = '';
+                calculation            = '';
+                number                 = '';
+                topScreen.innerHTML    = display;
+                display                = '';
             }
             else
             {
-                number = calculation;
+                number                 = calculation;
                 bottomScreen.innerHTML = calculation;
-                topScreen.innerHTML = display;
-                previousOperation = 'Other Operations';
+                topScreen.innerHTML    = display;
+                previousOperation      = 'Other Operations';
             }
         }
     }
@@ -292,7 +292,7 @@ function buttonValueHandler(value)
         {
             // To remove operator from string that is a last character in strings if it exists (2+2+) --> 2+2
             calculation = calculation.replace(/([-+/*])$/, '');
-            display = display.replace(/\s[-+÷×]\s$/, '');
+            display     = display.replace(/\s[-+÷×]\s$/, '');
         }
         // For continuously clicking equal operator --> Repeat last operation with result & last operand
         if(previousOperation === 'Equal')
@@ -302,37 +302,35 @@ function buttonValueHandler(value)
                 switch(display.match(/^((sqr)|(√)|(sin)|(cos)|(tan))/)[1])
                 {
                     case 'sqr':
-                        display = 'sqr(' + calculation + ')';
+                        display     = 'sqr(' + calculation + ')';
                         calculation = Math.pow(parseFloat(calculation), 2).toFixed(8).toString().replace(/(\.0+|0+)$/, '');
                         break;
                     case '√':
-                        display = '√(' + calculation + ')';
+                        display     = '√(' + calculation + ')';
                         calculation = Math.sqrt(parseFloat(calculation)).toFixed(8).toString().replace(/(\.0+|0+)$/, '');
                         break;
                     case 'sin':
-                        display = 'sin<sub>r</sub>(' + calculation + ')';
+                        display     = 'sin<sub>r</sub>(' + calculation + ')';
                         calculation = Math.sin(parseFloat(calculation)).toFixed(8).toString().replace(/(\.0+|0+)$/, '');
                         break;
                     case 'cos':
-                        display = 'cos<sub>r</sub>(' + calculation + ')';
+                        display     = 'cos<sub>r</sub>(' + calculation + ')';
                         calculation = Math.cos(parseFloat(calculation)).toFixed(8).toString().replace(/(\.0+|0+)$/, '');
                         break;
                     case 'tan':
-                        display = 'tan<sub>r</sub>(' + calculation + ')';
+                        display     = 'tan<sub>r</sub>(' + calculation + ')';
                         calculation = Math.tan(parseFloat(calculation)).toFixed(8).toString().replace(/(\.0+|0+)$/, '');
                         break;
                 }
-                historyData.addHistory(display + ' = ' + calculation, displayTime('history'));
                 bottomScreen.innerHTML = calculation;
-                topScreen.innerHTML = display;
+                topScreen.innerHTML    = display;
+                historyData.addHistory(display + ' = ' + calculation, displayTime('history'));
             }
             else
             {
                 // Return from function if display string does not have an operator
-                if(display.match(/[-+÷×]\s(\(-)?\d+/) === null)
-                {
+                if(display.match(/[-+÷×]\s(\(-)?\d+/) === null || bottomScreen.innerHTML === 'Undefined')
                     return;
-                }
                 // Find operators and numbers --> Result is an array of matching operators
                 var match = display.match(/\s([-+÷×])\s/g);
                 // Add last matching operator to calculation & number for displaying history
@@ -358,14 +356,22 @@ function buttonValueHandler(value)
                 // Evaluate expression
                 calculation = eval(calculation + match[match.length - 1] + number).toFixed(8).toString().replace(/(\.0+|0+)$/, '');
                 // Display
-                if(calculation === 'Infinity')
-                    calculation = 'Undefined';
-                bottomScreen.innerHTML = calculation;
-                historyData.addHistory(display + ' = ' + calculation, displayTime('history'));
-                // Show history delete-all button
-                document.getElementById('delete-history').style.display = 'block';
-                // Show history panel on small screens.
-                smallScreens();
+                if(calculation === 'Infinity' || calculation === '-Infinity')
+                {
+                    calculation            = '';
+                    number                 = '';
+                    display                = '';
+                    bottomScreen.innerHTML = 'Undefined';
+                }
+                else
+                {
+                    bottomScreen.innerHTML = calculation;
+                    historyData.addHistory(display + ' = ' + calculation, displayTime('history'));
+                    // Show history delete-all button
+                    document.getElementById('delete-history').style.display = 'block';
+                    // Show history panel on small screens.
+                    smallScreens();
+                }
             }
         }
         // If previous value clicked is not equal...
@@ -381,15 +387,23 @@ function buttonValueHandler(value)
                 }
                 // Evaluate expression
                 calculation = eval(calculation).toFixed(8).toString().replace(/(\.0+|0+)$/, '');
-                if(calculation === 'Infinity')
-                    calculation = 'Undefined';
-                topScreen.innerHTML = '';
-                bottomScreen.innerHTML = calculation;
-                historyData.addHistory(display + ' = ' + calculation, displayTime('history'));
-                // Show history delete-all button
-                document.getElementById('delete-history').style.display = 'block';
-                // Show history panel on small screens.
-                smallScreens();
+                if(calculation === 'Infinity' || calculation === '-Infinity')
+                {
+                    calculation            = '';
+                    number                 = '';
+                    display                = '';
+                    bottomScreen.innerHTML = 'Undefined';
+                }
+                else
+                {
+                    topScreen.innerHTML = '';
+                    bottomScreen.innerHTML = calculation;
+                    historyData.addHistory(display + ' = ' + calculation, displayTime('history'));
+                    // Show history delete-all button
+                    document.getElementById('delete-history').style.display = 'block';
+                    // Show history panel on small screens.
+                    smallScreens();
+                }
             }
         }
         previousOperation = 'Equal';
@@ -546,7 +560,7 @@ function buttonValueHandler(value)
         default:
             if(value === '0')
             {
-                if(number === '' || number.match(/^([1-9])/) || number.match(/^(0\.)/))
+                if(number === '' || number.match(/^([1-9])/) || number.match(/^(0\.)/) || previousOperation === 'Basic Operation')
                 {
                     value = '0';
                 }
