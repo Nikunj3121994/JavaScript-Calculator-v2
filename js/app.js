@@ -268,10 +268,21 @@ function buttonValueHandler(value)
                         calculation = Math.sqrt(parseFloat(eval(calculation))).toFixed(8).toString().replace(/(\.0+|0+)$/, '');
                     break;
             }
-            number = calculation;
-            bottomScreen.innerHTML = calculation;
-            topScreen.innerHTML = display;
-            previousOperation = 'Other Operations';
+            if(calculation === 'NaN')
+            {
+                bottomScreen.innerHTML = 'Invalid Input!';
+                calculation = '';
+                number = '';
+                topScreen.innerHTML = display;
+                display = '';
+            }
+            else
+            {
+                number = calculation;
+                bottomScreen.innerHTML = calculation;
+                topScreen.innerHTML = display;
+                previousOperation = 'Other Operations';
+            }
         }
     }
 
@@ -348,7 +359,7 @@ function buttonValueHandler(value)
                 calculation = eval(calculation + match[match.length - 1] + number).toFixed(8).toString().replace(/(\.0+|0+)$/, '');
                 // Display
                 if(calculation === 'Infinity')
-                    calculation = '0';
+                    calculation = 'Undefined';
                 bottomScreen.innerHTML = calculation;
                 historyData.addHistory(display + ' = ' + calculation, displayTime('history'));
                 // Show history delete-all button
@@ -371,7 +382,7 @@ function buttonValueHandler(value)
                 // Evaluate expression
                 calculation = eval(calculation).toFixed(8).toString().replace(/(\.0+|0+)$/, '');
                 if(calculation === 'Infinity')
-                    calculation = '0';
+                    calculation = 'Undefined';
                 topScreen.innerHTML = '';
                 bottomScreen.innerHTML = calculation;
                 historyData.addHistory(display + ' = ' + calculation, displayTime('history'));
